@@ -178,6 +178,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9081d1dd33db8e9438b66140bf69982d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  home:
+    fillColor: {r: 0.9339623, g: 0.12775902, b: 0.13590427, a: 1}
+  territory:
+    fillColor: {r: 0.990566, g: 0.71488965, b: 0.71488965, a: 1}
+  neutral:
+    fillColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &7101160
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1062,15 +1068,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 625894184749319485, guid: 2d96f03e737bcb0498738bbb2227e856, type: 3}
       propertyPath: m_Color.b
-      value: 0.49661803
+      value: 0.6132076
       objectReference: {fileID: 0}
     - target: {fileID: 625894184749319485, guid: 2d96f03e737bcb0498738bbb2227e856, type: 3}
       propertyPath: m_Color.g
-      value: 0.6792453
+      value: 0.6132076
       objectReference: {fileID: 0}
     - target: {fileID: 625894184749319485, guid: 2d96f03e737bcb0498738bbb2227e856, type: 3}
       propertyPath: m_Color.r
-      value: 0.5574938
+      value: 0.6132076
       objectReference: {fileID: 0}
     - target: {fileID: 2940656523916603619, guid: 2d96f03e737bcb0498738bbb2227e856, type: 3}
       propertyPath: m_text

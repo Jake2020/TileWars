@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -6,21 +7,24 @@ using UnityEngine.UI;
 
 public class Hexagon : MonoBehaviour
 {
+    [System.Serializable]
+    public class HexagonStates
+    {
+        public Color fillColor;
+    }
     private TextMeshProUGUI hexagonText;
+    private Image hexagonImage;
 
-    // Start is called before the first frame update
     void Awake()
     {
-        hexagonText = GetComponentInChildren<TextMeshProUGUI>(); 
+        hexagonText = GetComponentInChildren<TextMeshProUGUI>();
+        hexagonImage = GetComponent<Image>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void InitialiseHome(){
-        hexagonText.text = "*";
+    public void SetHexagonState(HexagonStates state){
+        if (state == FindObjectOfType<Board>().home) {
+            hexagonText.text = "*";
+        }
+        hexagonImage.color = state.fillColor;
     }
 }
