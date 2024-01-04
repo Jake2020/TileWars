@@ -16,6 +16,7 @@ public class Board : MonoBehaviour
     {
         allHexagons = GetComponentsInChildren<Hexagon>();
         allHexagons[0].SetHexagonState(territory);
+        //Hexagon.DecideHexagonState(allHexagons);
     }
 
     // Update is called once per frame

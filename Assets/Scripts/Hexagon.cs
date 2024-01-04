@@ -11,9 +11,11 @@ public class Hexagon : MonoBehaviour
     public class HexagonStates
     {
         public Color fillColor;
+        public string stateName;
     }
     private TextMeshProUGUI hexagonText;
     private Image hexagonImage;
+    private string hexagonCurrentState;
 
     void Awake()
     {
@@ -26,5 +28,16 @@ public class Hexagon : MonoBehaviour
             hexagonText.text = "*";
         }
         hexagonImage.color = state.fillColor;
+        hexagonCurrentState = state.stateName;
+    }
+
+    public void GetHexagonState(){
+
+    }
+
+    public void DecideHexagonState(Hexagon[] allHexagons){
+        foreach (Hexagon hex in allHexagons){
+            
+        }
     }
 }
