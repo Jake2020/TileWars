@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,12 +11,30 @@ public class Hexagon : MonoBehaviour
     [System.Serializable]
     public class HexagonStates
     {
-        public Color fillColor;
-        public string stateName;
+        [SerializeField]
+        private Color fillColor;
+
+        [SerializeField]
+        private string stateName;
+
+        public Color FillColor
+        {
+            get { return fillColor; }
+        }
+
+        public string StateName
+        {
+            get { return stateName; }
+        }
     }
     private TextMeshProUGUI hexagonText;
     private Image hexagonImage;
-    private string hexagonCurrentState;
+    private string hexagonCurrentState = "Neutral";
+
+    public string HexagonCurrentState
+        {
+            get { return hexagonCurrentState; }
+        }
 
     void Awake()
     {
@@ -27,17 +46,15 @@ public class Hexagon : MonoBehaviour
         if (state == FindObjectOfType<Board>().home) {
             hexagonText.text = "*";
         }
-        hexagonImage.color = state.fillColor;
-        hexagonCurrentState = state.stateName;
+        hexagonImage.color = state.FillColor;
+        hexagonCurrentState = state.StateName;
     }
 
-    public void GetHexagonState(){
-
-    }
-
-    public void DecideHexagonState(Hexagon[] allHexagons){
-        foreach (Hexagon hex in allHexagons){
-            
+    public void DecideHexagonState(){
+        if (this.HexagonCurrentState == "Neutral"){
+            hexagonText.text = "N";
+            return;
         }
+        
     }
 }

@@ -8,6 +8,7 @@ public class Board : MonoBehaviour
     public Hexagon.HexagonStates home;
     public Hexagon.HexagonStates territory;
     public Hexagon.HexagonStates neutral;
+    public Hexagon.HexagonStates invisible;
 
 
     private Hexagon[] allHexagons;
@@ -15,8 +16,11 @@ public class Board : MonoBehaviour
     void Start()
     {
         allHexagons = GetComponentsInChildren<Hexagon>();
-        allHexagons[0].SetHexagonState(territory);
-        //Hexagon.DecideHexagonState(allHexagons);
+        allHexagons[0].SetHexagonState(home);
+
+        foreach (Hexagon hex in allHexagons){
+            hex.DecideHexagonState();
+        }
     }
 
     // Update is called once per frame
