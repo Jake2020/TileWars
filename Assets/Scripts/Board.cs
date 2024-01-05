@@ -12,18 +12,18 @@ public class Board : MonoBehaviour
 
 
     private Hexagon[] allHexagons;
-    // Start is called before the first frame update
+   
     void Start()
     {
         allHexagons = GetComponentsInChildren<Hexagon>();
-        allHexagons[0].SetHexagonState(home);
 
         foreach (Hexagon hex in allHexagons){
-            hex.DecideHexagonState();
+            hex.SetHexagonState(invisible, allHexagons);
         }
+
+        allHexagons[9].SetHexagonState(home, allHexagons);
     }
 
-    // Update is called once per frame
     void Update()
     {
         
