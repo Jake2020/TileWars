@@ -212,21 +212,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boardObject: {fileID: 0}
-  home:
-    fillColor: {r: 0.105909556, g: 0.41676736, b: 0.6415094, a: 1}
-    stateName: home
+  homeTeam1:
+    fillColor: {r: 0.0037379938, g: 0.36871198, b: 0.7924528, a: 1}
+    stateName: 
+  homeTeam2:
+    fillColor: {r: 0.8490566, g: 0.46749368, b: 0, a: 1}
+    stateName: 
   invisible:
     fillColor: {r: 0, g: 0, b: 0, a: 0}
     stateName: invisible
   neutral:
     fillColor: {r: 0.5921569, g: 0.59607846, b: 0.5921569, a: 1}
     stateName: neutral
-  pressed:
-    fillColor: {r: 0.6462264, g: 0.875561, b: 1, a: 1}
-    stateName: pressed
-  territory:
-    fillColor: {r: 0.4669811, g: 0.6533307, b: 1, a: 1}
-    stateName: territory
+  pressedTeam1:
+    fillColor: {r: 0.630785, g: 0.7986828, b: 0.990566, a: 1}
+    stateName: 
+  pressedTeam2:
+    fillColor: {r: 0.98039216, g: 0.75287884, b: 0.54901963, a: 1}
+    stateName: 
+  territoryTeam1:
+    fillColor: {r: 0.28773582, g: 0.62132776, b: 1, a: 1}
+    stateName: 
+  territoryTeam2:
+    fillColor: {r: 0.990566, g: 0.66265255, b: 0.2569865, a: 1}
+    stateName: 
 --- !u!1001 &7101160
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4202,7 +4211,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 0.0754717, g: 0.0754717, b: 0.0754717, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

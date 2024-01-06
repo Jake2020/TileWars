@@ -88,7 +88,12 @@ public class Hexagon : MonoBehaviour
 
 
     public void SetHexagonState(HexagonStates state, Hexagon[] allHexagons, Board boardObject){
-        if (state == boardObject.home) {
+        if (state == boardObject.homeTeam1) {
+            hexagonText.text = "*";
+            this.FindTouchingHexagons(allHexagons, boardObject);
+        }
+
+        if (state == boardObject.homeTeam2) {
             hexagonText.text = "*";
             this.FindTouchingHexagons(allHexagons, boardObject);
         }

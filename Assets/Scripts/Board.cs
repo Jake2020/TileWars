@@ -8,11 +8,14 @@ public class Board : MonoBehaviour
 
     public Board boardObject;
 
-    public Hexagon.HexagonStates home;
+    public Hexagon.HexagonStates homeTeam1;
+    public Hexagon.HexagonStates homeTeam2;
     public Hexagon.HexagonStates invisible;
     public Hexagon.HexagonStates neutral;
-    public Hexagon.HexagonStates pressed;
-    public Hexagon.HexagonStates territory;
+    public Hexagon.HexagonStates pressedTeam1;
+    public Hexagon.HexagonStates pressedTeam2;
+    public Hexagon.HexagonStates territoryTeam1;
+    public Hexagon.HexagonStates territoryTeam2;
    
     void Start()
     {
@@ -23,7 +26,8 @@ public class Board : MonoBehaviour
             hex.SetHexagonState(invisible, allHexagons, boardObject);
         }
 
-        allHexagons[9].SetHexagonState(home, allHexagons, boardObject);
+        allHexagons[9].SetHexagonState(homeTeam1, allHexagons, boardObject);
+        allHexagons[30].SetHexagonState(homeTeam2, allHexagons, boardObject);
     }
 
     void Update()
