@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Board : MonoBehaviour
 {
-    private Hexagon[] allHexagons;
+    private Hexagon[] allHexagons; //array for all hexagon game objects
 
-    public Board boardObject;
+    public Board boardObject; //variable for board object instance
 
     public Hexagon.HexagonStates homeTeam1;
     public Hexagon.HexagonStates homeTeam2;
@@ -15,23 +15,26 @@ public class Board : MonoBehaviour
     public Hexagon.HexagonStates pressedTeam1;
     public Hexagon.HexagonStates pressedTeam2;
     public Hexagon.HexagonStates territoryTeam1;
-    public Hexagon.HexagonStates territoryTeam2;
+    public Hexagon.HexagonStates territoryTeam2; //the states show up in unity inspector in board, can be edited there
    
     void Start()
     {
-        allHexagons = GetComponentsInChildren<Hexagon>();
-        boardObject = FindObjectOfType<Board>();
+        allHexagons = GetComponentsInChildren<Hexagon>(); //pulls in the hexagon game objects into the array
+        boardObject = FindObjectOfType<Board>(); //pulls board object instance into variable
 
-        foreach (Hexagon hex in allHexagons){
-            hex.SetHexagonState(invisible, allHexagons, boardObject);
-        }
+        MakeAllHexagonsInvisible(); //at game start, set hexes to invisible
 
-        allHexagons[9].SetHexagonState(homeTeam1, allHexagons, boardObject);
-        allHexagons[30].SetHexagonState(homeTeam2, allHexagons, boardObject);
+        allHexagons[9].SetHexagonState(homeTeam1, allHexagons, boardObject); //setting home for team 1
+        allHexagons[30].SetHexagonState(homeTeam2, allHexagons, boardObject); //setting home for team 2
     }
 
-    void Update()
+    void Update() //main game loop, is called every tick
     {
         
+    }
+    private void MakeAllHexagonsInvisible(){
+        foreach (Hexagon hex in allHexagons){ //loop through all hexes and make them invisible
+            hex.SetHexagonState(invisible, allHexagons, boardObject);
+        }
     }
 }

@@ -10,9 +10,10 @@ using UnityEngine.UI;
 public class Hexagon : MonoBehaviour
 {
     [System.Serializable]
-    public class HexagonStates
+    public class HexagonStates //states are created on the board, and are used to assign hexes to either homes, neutrals, or territory
+                               //the states show up in unity inspector in board, can be edited there
     {
-        [SerializeField]
+        [SerializeField] //to make fields available and editable in unity editor
         private Color fillColor;
 
         [SerializeField]
@@ -29,18 +30,18 @@ public class Hexagon : MonoBehaviour
         }
     }
 
-    private string hexagonCurrentState = "Neutral";
-    private TextMeshProUGUI hexagonText;
-    private Image hexagonImage;
+    private string hexagonCurrentState; //just a reference for the state, doesnt change anything by itself
+    private TextMeshProUGUI hexagonText; //variable to hold the text component of each hex
+    private Image hexagonImage; //variable to hold image component of each hex
     
 
     public float hexagonX {get; private set; }
     public float hexagonY {get; private set; }
-    public float hexagonZ {get; private set; }
+    public float hexagonZ {get; private set; } //x, y, and z coords of hexagon (exact number is different than unity inspector shows, distance between hexes is the same)
 
-    public const int HORIZONTALOFFSET = 70;
-    public const int VERTICALOFFSET = 80;
-    public const int VERTICALDIAGONALOFFSET = 40;
+    public const int HORIZONTALOFFSET = 70; //how far to the left or right each hex is away from its adjacent column
+    public const int VERTICALOFFSET = 80; //how far above or below the hexes in the same column are from each other
+    public const int VERTICALDIAGONALOFFSET = 40; ///how far above or below the hexes in adjacent columns are from each other
    
     public string HexagonCurrentState
         {
@@ -49,60 +50,63 @@ public class Hexagon : MonoBehaviour
 
     void Awake()
     {
-        hexagonText = GetComponentInChildren<TextMeshProUGUI>();
-        hexagonImage = GetComponent<Image>();
+        hexagonText = GetComponentInChildren<TextMeshProUGUI>(); //pull text component into variable
+        hexagonImage = GetComponent<Image>(); //pull image component into the variable
         
-        hexagonX = transform.position.x;
+        hexagonX = transform.position.x; //pulls x, y, and z coords from transform component into variables
         hexagonY = transform.position.y;
         hexagonZ = transform.position.z;
     }
 
-    public void FindTouchingHexagons(Hexagon[] allHexagons, Board boardObject)
+    public void FindTouchingHexagons(Hexagon[] allHexagons, Board boardObject) //create an array of hexes touching the current hex object, and turn them neutral
 {
     List<Hexagon> touchingHexagonsArray = new List<Hexagon>();
 
-    // Define the offsets for the six neighboring hexagons
+    //define the offsets for where the six neighboring hexagons could be
     int[] horizontalOffsets = { 0, HORIZONTALOFFSET, HORIZONTALOFFSET, 0, -HORIZONTALOFFSET, -HORIZONTALOFFSET};
     int[] verticalOffsets = { VERTICALOFFSET, VERTICALDIAGONALOFFSET, -VERTICALDIAGONALOFFSET, -VERTICALOFFSET, -VERTICALDIAGONALOFFSET, VERTICALDIAGONALOFFSET  };
 
-    // Find the six neighboring hexagons
-    for (int i = 0; i < 6; i++)
+    
+    for (int i = 0; i < 6; i++) //loop through all 6 possible positios for neighboring hexagons
     {
         float targetX = this.hexagonX + horizontalOffsets[i];
         float targetY = this.hexagonY + verticalOffsets[i];
 
-        Hexagon touchingHexagon = allHexagons.FirstOrDefault(h => h.hexagonX == targetX && h.hexagonY == targetY);
+        Hexagon touchingHexagon = allHexagons.FirstOrDefault(h => h.hexagonX == targetX && h.hexagonY == targetY); //do the search for a hex with the target x and y coords
 
-        if (touchingHexagon != null)
+        if (touchingHexagon != null) //if there is a hexagon there, add it to the array of touching hexagons
         {
             touchingHexagonsArray.Add(touchingHexagon);
         }
     }
 
-    // Set the state for each neighboring hexagon
+    //should probably return the array and do the bit below in a different function
+
+    //loop through array of touching hexagons, and make them all neutral
     foreach (Hexagon touchingHexagon in touchingHexagonsArray)
     {
         touchingHexagon.SetHexagonState(boardObject.neutral, allHexagons, boardObject);
     }
 }
 
-
-    public void SetHexagonState(HexagonStates state, Hexagon[] allHexagons, Board boardObject){
+    //set the state of a hex 
+    public void SetHexagonState(HexagonStates state, Hexagon[] allHexagons, Board boardObject){ //pass in the desired state, list of all hexagons, and a reference for the board
         if (state == boardObject.homeTeam1) {
             hexagonText.text = "*";
-            this.FindTouchingHexagons(allHexagons, boardObject);
+            this.FindTouchingHexagons(allHexagons, boardObject); //if hex state becomes home, find neighbors and make them neutral
         }
 
         if (state == boardObject.homeTeam2) {
             hexagonText.text = "*";
-            this.FindTouchingHexagons(allHexagons, boardObject);
+            this.FindTouchingHexagons(allHexagons, boardObject); //if hex state becomes home, find neighbors and make them neutral
         }
         
         if(state == boardObject.neutral){
-            hexagonText.text = Letter.GenerateLetter().ToString();
+            hexagonText.text = Letter.GenerateLetter().ToString(); //genereate random letter with Letter class
         }
 
-        hexagonImage.color = state.FillColor;
-        hexagonCurrentState = state.StateName;
+        hexagonImage.color = state.FillColor; //set the hexes color to the state color assigned in unty editor
+        hexagonCurrentState = state.StateName; //update hexes state variable for qol 
     }
+    
 }
