@@ -212,17 +212,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   home:
-    fillColor: {r: 0.9339623, g: 0.12775902, b: 0.13590427, a: 1}
-    stateName: Home
+    fillColor: {r: 0.105909556, g: 0.41676736, b: 0.6415094, a: 1}
+    stateName: 
   territory:
-    fillColor: {r: 0.990566, g: 0.71488965, b: 0.71488965, a: 1}
-    stateName: Territory
+    fillColor: {r: 0.4669811, g: 0.6533307, b: 1, a: 1}
+    stateName: 
   neutral:
-    fillColor: {r: 1, g: 1, b: 1, a: 1}
-    stateName: Neutral
+    fillColor: {r: 0.5921569, g: 0.59607846, b: 0.5921569, a: 1}
+    stateName: 
   invisible:
     fillColor: {r: 0, g: 0, b: 0, a: 0}
-    stateName: Invisible
+    stateName: 
 --- !u!1001 &7101160
 PrefabInstance:
   m_ObjectHideFlags: 0

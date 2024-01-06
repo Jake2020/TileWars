@@ -60,22 +60,19 @@ public class Hexagon : MonoBehaviour
             hexagonText.text = "*";
             this.FindTouchingHexagon(allHexagons);
         }
+        
+        if(state == FindObjectOfType<Board>().neutral){
+            hexagonText.text = "N";
+        }
+
         hexagonImage.color = state.FillColor;
         hexagonCurrentState = state.StateName;
-    }
-
-    public void DecideHexagonState(){
-        if (this.HexagonCurrentState == "Neutral"){
-            hexagonText.text = "N";
-            return;
-        }
-        
     }
 
     public void FindTouchingHexagon(Hexagon[] allHexagons){
         List<Hexagon> touchingHexagonsArray = new List<Hexagon>();
         touchingHexagonsArray.Add(allHexagons.FirstOrDefault(h => h.hexagonX == this.hexagonX && h.hexagonY == this.hexagonY-VERTICALOFFSET));
-        touchingHexagonsArray[0].hexagonCurrentState = "Neutral";
-        touchingHexagonsArray[0].DecideHexagonState();
+
+        touchingHexagonsArray[0].SetHexagonState(FindObjectOfType<Board>().neutral, allHexagons);
     }
 }
