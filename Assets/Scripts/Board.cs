@@ -11,6 +11,7 @@ public class Board : MonoBehaviour
     public Hexagon.HexagonStates home;
     public Hexagon.HexagonStates invisible;
     public Hexagon.HexagonStates neutral;
+    public Hexagon.HexagonStates pressed;
     public Hexagon.HexagonStates territory;
    
     void Start()

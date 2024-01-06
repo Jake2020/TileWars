@@ -57,21 +57,44 @@ public class Hexagon : MonoBehaviour
         hexagonZ = transform.position.z;
     }
 
-    public void FindTouchingHexagon(Hexagon[] allHexagons, Board boardObject){
-        List<Hexagon> touchingHexagonsArray = new List<Hexagon>();
-        touchingHexagonsArray.Add(allHexagons.FirstOrDefault(h => h.hexagonX == this.hexagonX && h.hexagonY == this.hexagonY-VERTICALOFFSET));
+    public void FindTouchingHexagons(Hexagon[] allHexagons, Board boardObject)
+{
+    List<Hexagon> touchingHexagonsArray = new List<Hexagon>();
 
-        touchingHexagonsArray[0].SetHexagonState(boardObject.neutral, allHexagons, boardObject);
+    // Define the offsets for the six neighboring hexagons
+    int[] horizontalOffsets = { 0, HORIZONTALOFFSET, HORIZONTALOFFSET, 0, -HORIZONTALOFFSET, -HORIZONTALOFFSET};
+    int[] verticalOffsets = { VERTICALOFFSET, VERTICALDIAGONALOFFSET, -VERTICALDIAGONALOFFSET, -VERTICALOFFSET, -VERTICALDIAGONALOFFSET, VERTICALDIAGONALOFFSET  };
+
+    // Find the six neighboring hexagons
+    for (int i = 0; i < 6; i++)
+    {
+        float targetX = this.hexagonX + horizontalOffsets[i];
+        float targetY = this.hexagonY + verticalOffsets[i];
+
+        Hexagon touchingHexagon = allHexagons.FirstOrDefault(h => h.hexagonX == targetX && h.hexagonY == targetY);
+
+        if (touchingHexagon != null)
+        {
+            touchingHexagonsArray.Add(touchingHexagon);
+        }
     }
+
+    // Set the state for each neighboring hexagon
+    foreach (Hexagon touchingHexagon in touchingHexagonsArray)
+    {
+        touchingHexagon.SetHexagonState(boardObject.neutral, allHexagons, boardObject);
+    }
+}
+
 
     public void SetHexagonState(HexagonStates state, Hexagon[] allHexagons, Board boardObject){
         if (state == boardObject.home) {
             hexagonText.text = "*";
-            this.FindTouchingHexagon(allHexagons, boardObject);
+            this.FindTouchingHexagons(allHexagons, boardObject);
         }
         
         if(state == boardObject.neutral){
-            hexagonText.text = "N";
+            hexagonText.text = Letter.GenerateLetter().ToString();
         }
 
         hexagonImage.color = state.FillColor;

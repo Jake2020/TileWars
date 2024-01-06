@@ -211,18 +211,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9081d1dd33db8e9438b66140bf69982d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  boardObject: {fileID: 0}
   home:
     fillColor: {r: 0.105909556, g: 0.41676736, b: 0.6415094, a: 1}
-    stateName: 
-  territory:
-    fillColor: {r: 0.4669811, g: 0.6533307, b: 1, a: 1}
-    stateName: 
-  neutral:
-    fillColor: {r: 0.5921569, g: 0.59607846, b: 0.5921569, a: 1}
-    stateName: 
+    stateName: home
   invisible:
     fillColor: {r: 0, g: 0, b: 0, a: 0}
-    stateName: 
+    stateName: invisible
+  neutral:
+    fillColor: {r: 0.5921569, g: 0.59607846, b: 0.5921569, a: 1}
+    stateName: neutral
+  pressed:
+    fillColor: {r: 0.6462264, g: 0.875561, b: 1, a: 1}
+    stateName: pressed
+  territory:
+    fillColor: {r: 0.4669811, g: 0.6533307, b: 1, a: 1}
+    stateName: territory
 --- !u!1001 &7101160
 PrefabInstance:
   m_ObjectHideFlags: 0
