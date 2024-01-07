@@ -102,7 +102,7 @@ public class Hexagon : MonoBehaviour
             boardObject.MakeTouchingHexagonsNeutral(touchingHexagonsArray);
         }
         
-        if(state == boardObject.neutral){
+        if(state == boardObject.neutral && string.IsNullOrWhiteSpace(hexagonText.text) ){
             hexagonText.text = Letter.GenerateLetter().ToString(); //genereate random letter with Letter class
         }
 

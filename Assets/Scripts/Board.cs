@@ -56,6 +56,19 @@ public class Board : MonoBehaviour
     }
 
     public void HexagonPressed(Hexagon hex){
-        hex.SetHexagonState(boardObject.pressedTeam1, allHexagons, boardObject);
+        string hexState = hex.HexagonCurrentState;
+        if (hexState == "neutral" && team1Turn){
+            hex.SetHexagonState(boardObject.pressedTeam1, allHexagons, boardObject);
+        }
+        if (hexState == "neutral" && !team1Turn){
+            hex.SetHexagonState(boardObject.pressedTeam2, allHexagons, boardObject);
+        }
+        if (hexState == "pressedTeam1" && team1Turn){
+            hex.SetHexagonState(boardObject.neutral, allHexagons, boardObject);
+        }
+        if (hexState == "pressedTeam2" && !team1Turn){
+            hex.SetHexagonState(boardObject.neutral, allHexagons, boardObject);
+        }
+
     }
 }
