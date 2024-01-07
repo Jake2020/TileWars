@@ -30,6 +30,7 @@ public class Hexagon : MonoBehaviour
         }
     }
 
+    private Button hexagonButton; //variable to hold each hexagons button component
     private string hexagonCurrentState; //just a reference for the state, doesnt change anything by itself
     private TextMeshProUGUI hexagonText; //variable to hold the text component of each hex
     private Image hexagonImage; //variable to hold image component of each hex
@@ -52,10 +53,13 @@ public class Hexagon : MonoBehaviour
     {
         hexagonText = GetComponentInChildren<TextMeshProUGUI>(); //pull text component into variable
         hexagonImage = GetComponent<Image>(); //pull image component into the variable
+        hexagonButton = GetComponent<Button>(); //pull button component into the variable
         
         hexagonX = transform.position.x; //pulls x, y, and z coords from transform component into variables
         hexagonY = transform.position.y;
         hexagonZ = transform.position.z;
+
+        hexagonButton.onClick.AddListener(() => FindObjectOfType<Board>().HexagonPressed(this));
     }
 
     public List<Hexagon> FindTouchingHexagons(Hexagon[] allHexagons, Board boardObject) //create an array of hexes touching the current hex object, and turn them neutral

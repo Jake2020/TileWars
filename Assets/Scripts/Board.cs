@@ -8,6 +8,8 @@ public class Board : MonoBehaviour
 
     public Board boardObject; //variable for board object instance
 
+    public bool team1Turn = true;
+
     public Hexagon.HexagonStates homeTeam1;
     public Hexagon.HexagonStates homeTeam2;
     public Hexagon.HexagonStates invisible;
@@ -43,5 +45,17 @@ public class Board : MonoBehaviour
         {
             touchingHexagon.SetHexagonState(boardObject.neutral, allHexagons, boardObject);
         }
+    }
+
+    public void ChangeTurn(){
+        if (team1Turn){
+            team1Turn = false;
+        } else{
+            team1Turn = true;
+        }
+    }
+
+    public void HexagonPressed(Hexagon hex){
+        hex.SetHexagonState(boardObject.pressedTeam1, allHexagons, boardObject);
     }
 }
