@@ -44,13 +44,13 @@ public class Hexagon : MonoBehaviour
     public const int VERTICALOFFSET = 80; //how far above or below the hexes in the same column are from each other
     public const int VERTICALDIAGONALOFFSET = 40; ///how far above or below the hexes in adjacent columns are from each other
    
-    public string HexagonCurrentState
-        {
+    public string HexagonCurrentState{
+
             get { return hexagonCurrentState; }
         }
 
-    void Awake()
-    {
+    void Awake(){
+
         hexagonText = GetComponentInChildren<TextMeshProUGUI>(); //pull text component into variable
         hexagonImage = GetComponent<Image>(); //pull image component into the variable
         hexagonButton = GetComponent<Button>(); //pull button component into the variable
@@ -62,30 +62,33 @@ public class Hexagon : MonoBehaviour
         hexagonButton.onClick.AddListener(() => FindObjectOfType<Board>().HexagonPressed(this));
     }
 
-    public List<Hexagon> FindTouchingHexagons(Hexagon[] allHexagons, Board boardObject) //create an array of hexes touching the current hex object, and turn them neutral
-{
-    List<Hexagon> touchingHexagonsArray = new List<Hexagon>();
-
-    //define the offsets for where the six neighboring hexagons could be
-    int[] horizontalOffsets = { 0, HORIZONTALOFFSET, HORIZONTALOFFSET, 0, -HORIZONTALOFFSET, -HORIZONTALOFFSET};
-    int[] verticalOffsets = { VERTICALOFFSET, VERTICALDIAGONALOFFSET, -VERTICALDIAGONALOFFSET, -VERTICALOFFSET, -VERTICALDIAGONALOFFSET, VERTICALDIAGONALOFFSET  };
-
-    
-    for (int i = 0; i < 6; i++) //loop through all 6 possible positios for neighboring hexagons
-    {
-        float targetX = this.hexagonX + horizontalOffsets[i];
-        float targetY = this.hexagonY + verticalOffsets[i];
-
-        Hexagon touchingHexagon = allHexagons.FirstOrDefault(h => h.hexagonX == targetX && h.hexagonY == targetY); //do the search for a hex with the target x and y coords
-
-        if (touchingHexagon != null) //if there is a hexagon there, add it to the array of touching hexagons
-        {
-            touchingHexagonsArray.Add(touchingHexagon);
-        }
+    public void DeleteLetter(){
+        hexagonText.text = "";
     }
 
-    return touchingHexagonsArray;
-}
+    public List<Hexagon> FindTouchingHexagons(Hexagon[] allHexagons, Board boardObject){ //create an array of hexes touching the current hex object, and turn them neutral
+
+        List<Hexagon> touchingHexagonsArray = new List<Hexagon>();
+        //define the offsets for where the six neighboring hexagons could be
+        int[] horizontalOffsets = { 0, HORIZONTALOFFSET, HORIZONTALOFFSET, 0, -HORIZONTALOFFSET, -HORIZONTALOFFSET};
+        int[] verticalOffsets = { VERTICALOFFSET, VERTICALDIAGONALOFFSET, -VERTICALDIAGONALOFFSET, -VERTICALOFFSET, -VERTICALDIAGONALOFFSET, VERTICALDIAGONALOFFSET  };
+
+        
+        for (int i = 0; i < 6; i++){ //loop through all 6 possible positios for neighboring hexagons
+        
+            float targetX = this.hexagonX + horizontalOffsets[i];
+            float targetY = this.hexagonY + verticalOffsets[i];
+
+            Hexagon touchingHexagon = allHexagons.FirstOrDefault(h => h.hexagonX == targetX && h.hexagonY == targetY); //do the search for a hex with the target x and y coords
+
+            if (touchingHexagon != null) //if there is a hexagon there, add it to the array of touching hexagons
+            {
+                touchingHexagonsArray.Add(touchingHexagon);
+            }
+        }
+
+        return touchingHexagonsArray;
+    }
 
     //set the state of a hex 
     public void SetHexagonState(HexagonStates state, Hexagon[] allHexagons, Board boardObject){ //pass in the desired state, list of all hexagons, and a reference for the board
@@ -97,7 +100,6 @@ public class Hexagon : MonoBehaviour
 
         if (state == boardObject.homeTeam2) {
             hexagonText.text = "*";
-            this.FindTouchingHexagons(allHexagons, boardObject); //if hex state becomes home, find neighbors and make them neutral
             List<Hexagon> touchingHexagonsArray = this.FindTouchingHexagons(allHexagons, boardObject); //if hex state becomes home, find neighbors and make them neutral
             boardObject.MakeTouchingHexagonsNeutral(touchingHexagonsArray);
         }
