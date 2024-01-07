@@ -58,7 +58,7 @@ public class Hexagon : MonoBehaviour
         hexagonZ = transform.position.z;
     }
 
-    public void FindTouchingHexagons(Hexagon[] allHexagons, Board boardObject) //create an array of hexes touching the current hex object, and turn them neutral
+    public List<Hexagon> FindTouchingHexagons(Hexagon[] allHexagons, Board boardObject) //create an array of hexes touching the current hex object, and turn them neutral
 {
     List<Hexagon> touchingHexagonsArray = new List<Hexagon>();
 
@@ -80,25 +80,22 @@ public class Hexagon : MonoBehaviour
         }
     }
 
-    //should probably return the array and do the bit below in a different function
-
-    //loop through array of touching hexagons, and make them all neutral
-    foreach (Hexagon touchingHexagon in touchingHexagonsArray)
-    {
-        touchingHexagon.SetHexagonState(boardObject.neutral, allHexagons, boardObject);
-    }
+    return touchingHexagonsArray;
 }
 
     //set the state of a hex 
     public void SetHexagonState(HexagonStates state, Hexagon[] allHexagons, Board boardObject){ //pass in the desired state, list of all hexagons, and a reference for the board
         if (state == boardObject.homeTeam1) {
             hexagonText.text = "*";
-            this.FindTouchingHexagons(allHexagons, boardObject); //if hex state becomes home, find neighbors and make them neutral
+            List<Hexagon> touchingHexagonsArray = this.FindTouchingHexagons(allHexagons, boardObject); //if hex state becomes home, find neighbors and make them neutral
+            boardObject.MakeTouchingHexagonsNeutral(touchingHexagonsArray);
         }
 
         if (state == boardObject.homeTeam2) {
             hexagonText.text = "*";
             this.FindTouchingHexagons(allHexagons, boardObject); //if hex state becomes home, find neighbors and make them neutral
+            List<Hexagon> touchingHexagonsArray = this.FindTouchingHexagons(allHexagons, boardObject); //if hex state becomes home, find neighbors and make them neutral
+            boardObject.MakeTouchingHexagonsNeutral(touchingHexagonsArray);
         }
         
         if(state == boardObject.neutral){

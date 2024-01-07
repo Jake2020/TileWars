@@ -32,9 +32,16 @@ public class Board : MonoBehaviour
     {
         
     }
-    private void MakeAllHexagonsInvisible(){
-        foreach (Hexagon hex in allHexagons){ //loop through all hexes and make them invisible
+    private void MakeAllHexagonsInvisible(){ //loop through all hexes and make them invisible
+        foreach (Hexagon hex in allHexagons){ 
             hex.SetHexagonState(invisible, allHexagons, boardObject);
+        }
+    }
+
+    public void MakeTouchingHexagonsNeutral(List<Hexagon> touchingHexagonsArray){ //loop through array of touching hexagons, and make them all neutral
+        foreach (Hexagon touchingHexagon in touchingHexagonsArray)
+        {
+            touchingHexagon.SetHexagonState(boardObject.neutral, allHexagons, boardObject);
         }
     }
 }
