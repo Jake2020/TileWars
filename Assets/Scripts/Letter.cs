@@ -35,7 +35,7 @@ private static readonly char[] Letters =
         'y', 'y',
         'z'
     };
-    public static char GenerateLetter(){ //pick random letter
-        return Letters[Random.Range(0, Letters.Length)];
+    public static string GenerateLetter(){ //pick random letter
+        return Letters[Random.Range(0, Letters.Length)].ToString();
     }
 }

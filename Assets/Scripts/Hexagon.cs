@@ -66,6 +66,10 @@ public class Hexagon : MonoBehaviour
         hexagonText.text = "";
     }
 
+    public void SetLetter(){
+        hexagonText.text = Letter.GenerateLetter();
+    }
+
     public List<Hexagon> FindTouchingHexagons(Hexagon[] allHexagons, Board boardObject){ //create an array of hexes touching the current hex object, and turn them neutral
 
         List<Hexagon> touchingHexagonsArray = new List<Hexagon>();
@@ -105,7 +109,7 @@ public class Hexagon : MonoBehaviour
         }
         
         if(state == boardObject.neutral && string.IsNullOrWhiteSpace(hexagonText.text) ){
-            hexagonText.text = Letter.GenerateLetter().ToString(); //genereate random letter with Letter class
+            hexagonText.text = Letter.GenerateLetter(); //genereate random letter with Letter class
         }
 
         hexagonImage.color = state.FillColor; //set the hexes color to the state color assigned in unty editor

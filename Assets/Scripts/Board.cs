@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -45,9 +46,19 @@ public class Board : MonoBehaviour
             string hexState = touchingHexagon.HexagonCurrentState;
             if (team1Turn && hexState != "homeTeam1" && hexState != "territoryTeam1" && hexState != "pressedTeam1" ){
                 touchingHexagon.SetHexagonState(boardObject.neutral, allHexagons, boardObject);
+
+                if (hexState == "homeTeam2"){
+                    touchingHexagon.SetLetter();
+                    SetNewHome("homeTeam2");
+                }
             }
             if (!team1Turn && hexState != "homeTeam2" && hexState != "territoryTeam2" && hexState != "pressedTeam2" ){
                 touchingHexagon.SetHexagonState(boardObject.neutral, allHexagons, boardObject);
+
+                if (hexState == "homeTeam1"){
+                    touchingHexagon.SetLetter();
+                    SetNewHome("homeTeam1");
+                }
             }
         }
     }
@@ -97,6 +108,33 @@ public class Board : MonoBehaviour
         }
 
     }
+
+    private void SetNewHome(string team){
+        if (team == "homeTeam2"){
+            Hexagon hex = SelectRandomHexagonOfType("territoryTeam2");
+            ChangeTurn();
+            hex.SetHexagonState(homeTeam2, allHexagons, boardObject);
+            ChangeTurn(); //changing turn before and after so that when the new home is set, its that players turn, so their home doesnt turn their territory neutral
+        } else{
+            Hexagon hex = SelectRandomHexagonOfType("territoryTeam1");
+            ChangeTurn();
+            hex.SetHexagonState(homeTeam1, allHexagons, boardObject);
+            ChangeTurn();
+        }
+        
+    }
+
+    private Hexagon SelectRandomHexagonOfType(string state){
+        List<Hexagon> targetHexes = new List<Hexagon>();
+        foreach (Hexagon hex in allHexagons){
+            if (hex.HexagonCurrentState == state){
+                targetHexes.Add(hex);
+            }
+        }
+        return targetHexes[UnityEngine.Random.Range(0, targetHexes.Count)];
+        throw new NullReferenceException("didnt return hex");
+    }
+    
 
     public void SubmitButtonPressed(){
         
