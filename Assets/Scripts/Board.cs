@@ -73,7 +73,7 @@ public class Board : MonoBehaviour
         }
     }
 
-    public void ChangeTurn(){
+    public void ChangeTurn(){ //flip the turn bool to the other state, indicating its the other players turn
         if (team1Turn){
             team1Turn = false;
         } else{
