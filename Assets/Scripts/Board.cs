@@ -35,6 +35,15 @@ public class Board : MonoBehaviour
     {
         
     }
+
+    private void ClearPressedHexagons(){
+        foreach (Hexagon hex in allHexagons){
+            if (hex.HexagonCurrentState == "pressedTeam1" || hex.HexagonCurrentState == "pressedTeam2"){
+                hex.DeleteLetter();
+                hex.SetHexagonState(neutral, allHexagons, boardObject);
+            }
+        }
+    }
     private void MakeAllHexagonsInvisible(){ //loop through all hexes and make them invisible
         foreach (Hexagon hex in allHexagons){ 
             hex.SetHexagonState(invisible, allHexagons, boardObject);
@@ -63,25 +72,35 @@ public class Board : MonoBehaviour
         }
     }
 
-    public void MakePressedHexagonsTerritory(){ //go through all hexagons, any that are in a pressed state become territory, also update the neighboring hexagons 
-        foreach (Hexagon hex in allHexagons){
-            if (hex.HexagonCurrentState == "pressedTeam1"){
+    public void MakePressedHexagonsTerritory(Hexagon hex){ //go through all hexagons, any that are in a pressed state become territory, also update the neighboring hexagons 
+        
+            if (hex.HexagonCurrentState == "territoryTeam1" || hex.HexagonCurrentState ==  "homeTeam1"){
+                List<Hexagon> touchingHexes = hex.FindTouchingHexagons(allHexagons, boardObject);
+                foreach (Hexagon touchingHex in touchingHexes){
+                    if (touchingHex.HexagonCurrentState == "pressedTeam1"){
+                        touchingHex.DeleteLetter(); //make hex empty again
 
-                hex.DeleteLetter(); //make hex empty again
-
-                hex.SetHexagonState(territoryTeam1, allHexagons, boardObject); //set to territory
-                List<Hexagon> touchingHexagonsArray = hex.FindTouchingHexagons(allHexagons, boardObject); //find hexes touching the new territory hex 
-                MakeTouchingHexagonsNeutral(touchingHexagonsArray); //new territory hexes neighbors become neutral if applicable
+                        touchingHex.SetHexagonState(territoryTeam1, allHexagons, boardObject); //set to territory
+                        List<Hexagon> touchingHexagonsArray = touchingHex.FindTouchingHexagons(allHexagons, boardObject); //find hexes touching the new territory hex 
+                        MakeTouchingHexagonsNeutral(touchingHexagonsArray); //new territory hexes neighbors become neutral if applicable
+                        MakePressedHexagonsTerritory(touchingHex);
+                    }
+                }               
             }
-            if (hex.HexagonCurrentState == "pressedTeam2"){ //same as above but for team 2
+            if (hex.HexagonCurrentState == "territoryTeam2" || hex.HexagonCurrentState ==  "homeTeam2"){
+                List<Hexagon> touchingHexes = hex.FindTouchingHexagons(allHexagons, boardObject);
+                foreach (Hexagon touchingHex in touchingHexes){
+                    if (touchingHex.HexagonCurrentState == "pressedTeam2"){
+                        touchingHex.DeleteLetter(); //make hex empty again
 
-                hex.DeleteLetter(); //make hex empty again
-
-                hex.SetHexagonState(territoryTeam2, allHexagons, boardObject);
-                List<Hexagon> touchingHexagonsArray = hex.FindTouchingHexagons(allHexagons, boardObject);
-                MakeTouchingHexagonsNeutral(touchingHexagonsArray);
+                        touchingHex.SetHexagonState(territoryTeam2, allHexagons, boardObject); //set to territory
+                        List<Hexagon> touchingHexagonsArray = touchingHex.FindTouchingHexagons(allHexagons, boardObject); //find hexes touching the new territory hex 
+                        MakeTouchingHexagonsNeutral(touchingHexagonsArray); //new territory hexes neighbors become neutral if applicable
+                        MakePressedHexagonsTerritory(touchingHex);
+                    }
+                }               
             }
-        }
+        
     }
 
     public void ChangeTurn(){ //flip the turn bool to the other state, indicating its the other players turn
@@ -121,7 +140,7 @@ public class Board : MonoBehaviour
             hex.SetHexagonState(homeTeam1, allHexagons, boardObject);
             ChangeTurn();
         }
-        
+        ChangeTurn();
     }
 
     private Hexagon SelectRandomHexagonOfType(string state){
@@ -138,7 +157,10 @@ public class Board : MonoBehaviour
 
     public void SubmitButtonPressed(){
         
-        MakePressedHexagonsTerritory();
+        foreach (Hexagon hex in allHexagons){
+            MakePressedHexagonsTerritory(hex);
+        }
+        ClearPressedHexagons();
         ChangeTurn();
 
     }
