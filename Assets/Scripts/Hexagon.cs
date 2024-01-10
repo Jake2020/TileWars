@@ -42,8 +42,14 @@ public class Hexagon : MonoBehaviour
 
     public const int HORIZONTALOFFSET = 70; //how far to the left or right each hex is away from its adjacent column
     public const int VERTICALOFFSET = 80; //how far above or below the hexes in the same column are from each other
-    public const int VERTICALDIAGONALOFFSET = 40; ///how far above or below the hexes in adjacent columns are from each other
+    public const int VERTICALDIAGONALOFFSET = 40; //how far above or below the hexes in adjacent columns are from each other
    
+   
+    public TextMeshProUGUI HexagonText{ //property for getter for letter in hex
+        get{
+            return hexagonText;
+        }
+    }
     public string HexagonCurrentState{
 
             get { return hexagonCurrentState; }

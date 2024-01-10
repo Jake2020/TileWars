@@ -1,16 +1,22 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Board : MonoBehaviour
 {
     public SpellCheck spellCheck = new SpellCheck();
+
     private Hexagon[] allHexagons; //array for all hexagon game objects
 
     public Board boardObject; //variable for board object instance
 
     public bool team1Turn = true;
+
+    public CurrentWord theCurrentWord;
+
+    public List<string> wordInProgress;
 
     public Hexagon.HexagonStates homeTeam1;
     public Hexagon.HexagonStates homeTeam2;
@@ -25,7 +31,8 @@ public class Board : MonoBehaviour
     {
         allHexagons = GetComponentsInChildren<Hexagon>(); //pulls in the hexagon game objects into the array
         boardObject = FindObjectOfType<Board>(); //pulls board object instance into variable
-        spellCheck = new SpellCheck();;
+        spellCheck = new SpellCheck();
+        theCurrentWord = GetComponentInChildren<CurrentWord>();
 
         MakeAllHexagonsInvisible(); //at game start, set hexes to invisible
 
@@ -46,6 +53,28 @@ public class Board : MonoBehaviour
             }
         }
     }
+
+    private void ClearPressedHexagonsIncorrect(){ //used when someone guesses incorrect word
+        foreach (Hexagon hex in allHexagons){
+            if (hex.HexagonCurrentState == "pressedTeam1" || hex.HexagonCurrentState == "pressedTeam2"){
+                hex.SetHexagonState(neutral, allHexagons, boardObject);
+            }
+        }
+    }
+
+    private void CurrentWordUpdate(string letter){
+        wordInProgress.Add(letter);
+        string word = string.Join("", wordInProgress);
+        theCurrentWord.UpdateCurrentWord(word);
+    }
+    private void CurrentWordRemove(string letter){
+        wordInProgress.Reverse();
+        wordInProgress.Remove(letter);
+        wordInProgress.Reverse();
+        string word = string.Join("", wordInProgress);
+        theCurrentWord.UpdateCurrentWord(word);
+    }
+
     private void MakeAllHexagonsInvisible(){ //loop through all hexes and make them invisible
         foreach (Hexagon hex in allHexagons){ 
             hex.SetHexagonState(invisible, allHexagons, boardObject);
@@ -114,17 +143,22 @@ public class Board : MonoBehaviour
     }
 
     public void HexagonPressed(Hexagon hex){
+
         string hexState = hex.HexagonCurrentState;
         if (hexState == "neutral" && team1Turn){
+            CurrentWordUpdate(hex.HexagonText.text);
             hex.SetHexagonState(boardObject.pressedTeam1, allHexagons, boardObject);
         }
         if (hexState == "neutral" && !team1Turn){
+            CurrentWordUpdate(hex.HexagonText.text);
             hex.SetHexagonState(boardObject.pressedTeam2, allHexagons, boardObject);
         }
         if (hexState == "pressedTeam1" && team1Turn){
+            CurrentWordRemove(hex.HexagonText.text);
             hex.SetHexagonState(boardObject.neutral, allHexagons, boardObject);
         }
         if (hexState == "pressedTeam2" && !team1Turn){
+            CurrentWordRemove(hex.HexagonText.text);
             hex.SetHexagonState(boardObject.neutral, allHexagons, boardObject);
         }
 
@@ -133,14 +167,18 @@ public class Board : MonoBehaviour
     private void SetNewHome(string team){
         if (team == "homeTeam2"){
             Hexagon hex = SelectRandomHexagonOfType("territoryTeam2");
-            ChangeTurn();
-            hex.SetHexagonState(homeTeam2, allHexagons, boardObject);
-            ChangeTurn(); //changing turn before and after so that when the new home is set, its that players turn, so their home doesnt turn their territory neutral
+            if(hex){
+                ChangeTurn();
+                hex.SetHexagonState(homeTeam2, allHexagons, boardObject);
+                ChangeTurn(); //changing turn before and after so that when the new home is set, its that players turn, so their home doesnt turn their territory neutral
+            }
         } else{
             Hexagon hex = SelectRandomHexagonOfType("territoryTeam1");
-            ChangeTurn();
-            hex.SetHexagonState(homeTeam1, allHexagons, boardObject);
-            ChangeTurn();
+            if(hex){
+                ChangeTurn();
+                hex.SetHexagonState(homeTeam1, allHexagons, boardObject);
+                ChangeTurn();
+            }
         }
         ChangeTurn();
     }
@@ -152,19 +190,29 @@ public class Board : MonoBehaviour
                 targetHexes.Add(hex);
             }
         }
-        return targetHexes[UnityEngine.Random.Range(0, targetHexes.Count)];
-        throw new NullReferenceException("didnt return hex");
+        if (targetHexes.Count == 0){
+            Debug.Log("WINNER");
+            return null;
+        } else{
+            return targetHexes[UnityEngine.Random.Range(0, targetHexes.Count)];
+        }
     }
     
 
     public void SubmitButtonPressed(){
         
-        foreach (Hexagon hex in allHexagons){
-            MakePressedHexagonsTerritory(hex);
-        }
+        if (spellCheck.IsValidWord(theCurrentWord.CurrentWordText.text)){
+           foreach (Hexagon hex in allHexagons){
+                MakePressedHexagonsTerritory(hex);
+            }
         ClearPressedHexagons();
         ChangeTurn();
-        Debug.Log(spellCheck.IsWord("apzzzple"));
-
+        theCurrentWord.UpdateCurrentWord("");
+        wordInProgress.Clear();
+        } else {
+            ClearPressedHexagonsIncorrect();
+            theCurrentWord.UpdateCurrentWord("");
+            wordInProgress.Clear();
+        }
     }
 }

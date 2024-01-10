@@ -6,11 +6,16 @@ using NetSpell;
 public class SpellCheck
 {
     NetSpell.SpellChecker.Dictionary.WordDictionary oDict;
-    public bool IsWord(string word){
-        NetSpell.SpellChecker.Spelling oSpell = new NetSpell.SpellChecker.Spelling(); 
+    public bool IsValidWord(string word){
+        if (word.Length > 2){
+            NetSpell.SpellChecker.Spelling oSpell = new NetSpell.SpellChecker.Spelling(); 
 
-        oSpell.Dictionary = oDict; 
-        return oSpell.TestWord(word);
+            oSpell.Dictionary = oDict; 
+            return oSpell.TestWord(word);
+        }
+        else{
+            return false;
+        }
     }
 
     public SpellCheck()
