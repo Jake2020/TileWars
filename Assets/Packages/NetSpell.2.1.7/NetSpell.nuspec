@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>NetSpell</id>
+        <version>2.1.7</version>
+        <title>NetSpell - Spell Checker for .NET</title>
+        <authors>LoreSoft</authors>
+        <owners>Pavel Nezhencev</owners>
+        <projectUrl>http://www.loresoft.com/projects/netspell/the-netspell-project/default.aspx</projectUrl>
+        <iconUrl>http://www.loresoft.com/__utility/img/favicon.ico</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>NetSpell's suggestions for a misspelled word are generated using phonetic (sounds like) matching and ranked by a typographical (looks like) score. NetSpell supports multiple languages and the dictionaries are based on the OpenOffice Affix compression format.
+
+NetSpell also supports user added words, automatic creation of user dictionaries, includes a dictionary build tool to build custom dictionaries.</description>
+        <summary>The NetSpell project is a spell checking engine written entirely in managed C# .net code.</summary>
+        <copyright>Copyright © 2003 Paul Welter</copyright>
+        <language>en-US</language>
+        <tags>spell checker dictionary word suggestions</tags>
+    </metadata>
+</package>

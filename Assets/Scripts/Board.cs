@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Board : MonoBehaviour
 {
+    public SpellCheck spellCheck = new SpellCheck();
     private Hexagon[] allHexagons; //array for all hexagon game objects
 
     public Board boardObject; //variable for board object instance
@@ -24,6 +25,7 @@ public class Board : MonoBehaviour
     {
         allHexagons = GetComponentsInChildren<Hexagon>(); //pulls in the hexagon game objects into the array
         boardObject = FindObjectOfType<Board>(); //pulls board object instance into variable
+        spellCheck = new SpellCheck();;
 
         MakeAllHexagonsInvisible(); //at game start, set hexes to invisible
 
@@ -162,6 +164,7 @@ public class Board : MonoBehaviour
         }
         ClearPressedHexagons();
         ChangeTurn();
+        Debug.Log(spellCheck.IsWord("apzzzple"));
 
     }
 }
