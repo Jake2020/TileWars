@@ -213,33 +213,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9081d1dd33db8e9438b66140bf69982d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardObject: {fileID: 0}
-  team1Turn: 1
-  theCurrentWord: {fileID: 0}
-  wordInProgress: []
   homeTeam1:
-    fillColor: {r: 0.0037379938, g: 0.36871198, b: 0.7924528, a: 1}
+    fillColor: {r: 0.10279457, g: 0.14431103, b: 0.6226415, a: 1}
     stateName: homeTeam1
   homeTeam2:
-    fillColor: {r: 0.8490566, g: 0.46749368, b: 0, a: 1}
+    fillColor: {r: 0.764151, g: 0.37879574, b: 0.14057496, a: 1}
     stateName: homeTeam2
   invisible:
-    fillColor: {r: 0, g: 0, b: 0, a: 0}
+    fillColor: {r: 1, g: 1, b: 1, a: 0}
     stateName: invisible
   neutral:
     fillColor: {r: 0.5921569, g: 0.59607846, b: 0.5921569, a: 1}
     stateName: neutral
   pressedTeam1:
-    fillColor: {r: 0.630785, g: 0.7986828, b: 0.990566, a: 1}
+    fillColor: {r: 0.25640798, g: 0.3221687, b: 0.8113208, a: 0}
     stateName: pressedTeam1
   pressedTeam2:
-    fillColor: {r: 0.98039216, g: 0.75287884, b: 0.54901963, a: 1}
+    fillColor: {r: 0.8113208, g: 0.48997754, b: 0.27171594, a: 0}
     stateName: pressedTeam2
   territoryTeam1:
-    fillColor: {r: 0.28773582, g: 0.62132776, b: 1, a: 1}
+    fillColor: {r: 0.16456035, g: 0.22928645, b: 0.8113208, a: 0}
     stateName: territoryTeam1
   territoryTeam2:
-    fillColor: {r: 0.990566, g: 0.66265255, b: 0.2569865, a: 1}
+    fillColor: {r: 0.8584906, g: 0.43966088, b: 0.23891956, a: 0}
     stateName: territoryTeam2
 --- !u!1001 &7101160
 PrefabInstance:
@@ -2551,6 +2547,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78a4cd7a26a61d04eab4fcb73887a458, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentWordText: {fileID: 0}
 --- !u!1001 &897843233
 PrefabInstance:
   m_ObjectHideFlags: 0

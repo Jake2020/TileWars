@@ -35,8 +35,8 @@ public static class Letter
         'z'
     };
 
-    public static char GenerateLetter()
+    public static string GenerateLetter()
     {
-        return Letters[random.Next(0, Letters.Count)];
+        return Letters[random.Next(0, Letters.Count)].ToString();
     }
 }
