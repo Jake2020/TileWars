@@ -21,7 +21,7 @@ public class SpellCheck
     public SpellCheck()
     {
         NetSpell.SpellChecker.Dictionary.WordDictionary oDict = new NetSpell.SpellChecker.Dictionary.WordDictionary();
-        oDict.DictionaryFile = "C:/Users/benhu/Documents/GitHub/TileWars/Assets/Packages/NetSpell.2.1.7/dic/en-GB.dic";
+        oDict.DictionaryFile = Application.dataPath + "/Packages/NetSpell.2.1.7/dic/en-GB.dic";
         oDict.Initialize();
     }
 
