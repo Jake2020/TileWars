@@ -1,28 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
+using NetSpell.SpellChecker;
+using NetSpell.SpellChecker.Dictionary;
 using UnityEngine;
-using NetSpell;
 
 public class SpellCheck
 {
-    NetSpell.SpellChecker.Dictionary.WordDictionary oDict;
-    public bool IsValidWord(string word){
-        if (word.Length > 2){
-            NetSpell.SpellChecker.Spelling oSpell = new NetSpell.SpellChecker.Spelling(); 
-
-            oSpell.Dictionary = oDict; 
-            return oSpell.TestWord(word);
-        }
-        else{
-            return false;
-        }
-    }
+    private readonly Spelling spelling;
+    private readonly WordDictionary wordDictionary;
 
     public SpellCheck()
     {
-        NetSpell.SpellChecker.Dictionary.WordDictionary oDict = new NetSpell.SpellChecker.Dictionary.WordDictionary();
-        oDict.DictionaryFile = Application.dataPath + "/Packages/NetSpell.2.1.7/dic/en-GB.dic";
-        oDict.Initialize();
+        wordDictionary = new WordDictionary
+        {
+            DictionaryFile = Application.dataPath + "/Packages/NetSpell.2.1.7/dic/en-GB.dic"
+        };
+        wordDictionary.Initialize();
+
+        spelling = new Spelling
+        {
+            Dictionary = wordDictionary
+        };
     }
 
+    public bool IsValidWord(string word)
+    {
+        return word.Length > 2 && spelling.TestWord(word);
+    }
 }

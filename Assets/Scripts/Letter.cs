@@ -1,15 +1,14 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using UnityEngine;
 
 public static class Letter
 {
-    //list of all letters to be pulled from to put a letter in a hex
-private static readonly char[] Letters =
+    private static readonly Random random = new Random();
+
+    private static readonly List<char> Letters = new List<char>
     {
-        'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a','a',
-        'b', 'b','b',
+        'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a',
+        'b', 'b', 'b',
         'c', 'c',
         'd', 'd', 'd', 'd',
         'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
@@ -28,14 +27,16 @@ private static readonly char[] Letters =
         'r', 'r', 'r', 'r', 'r', 'r',
         's', 's', 's', 's', 's',
         't', 't', 't', 't', 't', 't', 't',
-        'u', 'u', 'u', 
-        'v', 
+        'u', 'u', 'u',
+        'v',
         'w', 'w',
         'x',
         'y', 'y',
         'z'
     };
-    public static string GenerateLetter(){ //pick random letter
-        return Letters[Random.Range(0, Letters.Length)].ToString();
+
+    public static char GenerateLetter()
+    {
+        return Letters[random.Next(0, Letters.Count)];
     }
 }
