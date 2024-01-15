@@ -3,11 +3,12 @@ using TMPro;
 
 public class CurrentWord : MonoBehaviour
 {
+    // Fields
     [SerializeField]
     private TextMeshProUGUI currentWordText;
-
     public TextMeshProUGUI CurrentWordText => currentWordText;
 
+    // Methods
     private void Awake()
     {
         InitializeComponents();

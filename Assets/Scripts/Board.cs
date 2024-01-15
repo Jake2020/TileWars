@@ -22,7 +22,7 @@ public class Board : MonoBehaviour
 
     // Fields
     private Hexagon[] allHexagons;
-
+    
     // Properties
     public Hexagon[] AllHexagons => allHexagons;
 
@@ -38,9 +38,19 @@ public class Board : MonoBehaviour
 
     // Class Methods
     void Start() {
-        allHexagons = GetComponentsInChildren<Hexagon>();
+        InitilizeComponents();
+        MakeAllHexagonsInvisible();
+        SetHomeBases();       
+    }
 
-        SetHomeBases();        
+    private void InitilizeComponents() {
+        allHexagons = GetComponentsInChildren<Hexagon>();
+    }
+
+    private void MakeAllHexagonsInvisible(){
+        foreach (Hexagon hex in AllHexagons){ 
+            hex.SetHexagonState(Invisible);
+        }
     }
 
     private void SetHomeBases() {

@@ -10,6 +10,7 @@ using UnityEngine.UI;
 public class Hexagon : MonoBehaviour
 {
     // Fields
+    private Board boardObject;
     private Button hexagonButton;
     private string hexagonCurrentState;
     private TextMeshProUGUI hexagonText;
@@ -19,7 +20,12 @@ public class Hexagon : MonoBehaviour
     private float hexagonY;
     private float hexagonZ;
 
+    public const int HORIZONTALOFFSET = 70; 
+    public const int VERTICALOFFSET = 80; 
+    public const int VERTICALDIAGONALOFFSET = 40; 
+
     // Properties
+    public Board BoardObject => boardObject;
     public TextMeshProUGUI HexagonText => hexagonText;
     public string HexagonCurrentState 
     {
@@ -37,6 +43,7 @@ public class Hexagon : MonoBehaviour
     }
 
     void InitilizeComponents() {
+        boardObject = FindObjectOfType<Board>();
         hexagonText = GetComponentInChildren<TextMeshProUGUI>();
         hexagonImage = GetComponent<Image>();
         hexagonButton = GetComponent<Button>();
@@ -46,13 +53,35 @@ public class Hexagon : MonoBehaviour
         hexagonZ = transform.position.z;
     }
 
+    public List<Hexagon> FindTouchingHexagons() {
+        List<Hexagon> touchingHexagonsArray = new List<Hexagon>();
+
+        int[] horizontalOffsets = { 0, HORIZONTALOFFSET, HORIZONTALOFFSET, 0, -HORIZONTALOFFSET, -HORIZONTALOFFSET};
+        int[] verticalOffsets = { VERTICALOFFSET, VERTICALDIAGONALOFFSET, -VERTICALDIAGONALOFFSET, -VERTICALOFFSET, -VERTICALDIAGONALOFFSET, VERTICALDIAGONALOFFSET  };
+
+        for (int i = 0; i < 6; i++) { 
+        
+            float targetX = this.hexagonX + horizontalOffsets[i];
+            float targetY = this.hexagonY + verticalOffsets[i];
+
+            Hexagon touchingHexagon = boardObject.AllHexagons.FirstOrDefault(h => h.hexagonX == targetX && h.hexagonY == targetY);
+
+            if (touchingHexagon != null)
+            {
+                touchingHexagonsArray.Add(touchingHexagon);
+            }
+        }
+
+        return touchingHexagonsArray;
+    } 
+
     public void SetHexagonState(HexagonStates state) {
         switch (state.StateName)
         {
             case "homeTeam1":
             case "homeTeam2":
                 HexagonText.text = "*";
-                // Find touching hexagons 
+                MakeTouchingHexagonsNeutralAroundHome();
                 // Make touching hexagons neutral
                 break;
             case "neutral":
@@ -65,5 +94,16 @@ public class Hexagon : MonoBehaviour
 
         HexagonImage.color = state.FillColor;
         HexagonCurrentState = state.StateName;
-    }    
+    }  
+
+    public void MakeTouchingHexagonsNeutralAroundHome() {
+        List<Hexagon> touchingHexagons = FindTouchingHexagons();
+        foreach (Hexagon touchingHexagon in touchingHexagons) {
+            string hexState = touchingHexagon.HexagonCurrentState;
+
+            if (hexState == "invisible") {
+                touchingHexagon.SetHexagonState(boardObject.Neutral);
+            }
+        }
+    }  
 }
