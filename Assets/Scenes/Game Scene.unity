@@ -214,10 +214,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   homeTeam1:
-    fillColor: {r: 0.10279457, g: 0.14431103, b: 0.6226415, a: 1}
+    fillColor: {r: 0.054957267, g: 0.1011283, b: 0.6132076, a: 1}
     stateName: homeTeam1
   homeTeam2:
-    fillColor: {r: 0.764151, g: 0.37879574, b: 0.14057496, a: 1}
+    fillColor: {r: 0.7058824, g: 0.38193706, b: 0.035294127, a: 1}
     stateName: homeTeam2
   invisible:
     fillColor: {r: 1, g: 1, b: 1, a: 0}
@@ -226,16 +226,16 @@ MonoBehaviour:
     fillColor: {r: 0.5921569, g: 0.59607846, b: 0.5921569, a: 1}
     stateName: neutral
   pressedTeam1:
-    fillColor: {r: 0.25640798, g: 0.3221687, b: 0.8113208, a: 0}
+    fillColor: {r: 0.4308473, g: 0.48543227, b: 0.8867924, a: 1}
     stateName: pressedTeam1
   pressedTeam2:
-    fillColor: {r: 0.8113208, g: 0.48997754, b: 0.27171594, a: 0}
+    fillColor: {r: 0.9433962, g: 0.769666, b: 0.51174796, a: 1}
     stateName: pressedTeam2
   territoryTeam1:
-    fillColor: {r: 0.16456035, g: 0.22928645, b: 0.8113208, a: 0}
+    fillColor: {r: 0.16456035, g: 0.22928645, b: 0.8113208, a: 1}
     stateName: territoryTeam1
   territoryTeam2:
-    fillColor: {r: 0.8584906, g: 0.43966088, b: 0.23891956, a: 0}
+    fillColor: {r: 0.9056604, g: 0.64176536, b: 0.36311856, a: 1}
     stateName: territoryTeam2
 --- !u!1001 &7101160
 PrefabInstance:

@@ -40,6 +40,7 @@ public class Hexagon : MonoBehaviour
 
     void Awake() {
         InitilizeComponents();
+        hexagonButton.onClick.AddListener(() => boardObject.HexagonPressed(this));
     }
 
     void InitilizeComponents() {
@@ -51,6 +52,14 @@ public class Hexagon : MonoBehaviour
         hexagonX = transform.position.x;
         hexagonY = transform.position.y;
         hexagonZ = transform.position.z;
+    }
+
+    public void DeleteLetter(){
+        HexagonText.text = "";
+    }
+
+    public void SetLetter(){
+        HexagonText.text = Letter.GenerateLetter();
     }
 
     public List<Hexagon> FindTouchingHexagons() {
@@ -82,13 +91,16 @@ public class Hexagon : MonoBehaviour
             case "homeTeam2":
                 HexagonText.text = "*";
                 MakeTouchingHexagonsNeutralAroundHome();
-                // Make touching hexagons neutral
                 break;
+
             case "neutral":
-                HexagonText.text = Letter.GenerateLetter();
+                if (string.IsNullOrWhiteSpace(HexagonText.text)) { 
+                    HexagonText.text = Letter.GenerateLetter();
+                }
                 break;
+
             default:
-                Console.WriteLine("Unknown color.");
+                Console.WriteLine("State not accepted");
                 break;
         }
 

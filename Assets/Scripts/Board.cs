@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Board : MonoBehaviour
@@ -22,9 +23,17 @@ public class Board : MonoBehaviour
 
     // Fields
     private Hexagon[] allHexagons;
+    private bool team1Turn = true;
+    private CurrentWord currentWordObjectOnScreen;
+    private List<string> listOfLettersPressed;
+    private SpellCheck spellCheck = new();
     
     // Properties
     public Hexagon[] AllHexagons => allHexagons;
+    public bool Team1Turn => team1Turn;
+    public CurrentWord CurrentWordObjectOnScreen => currentWordObjectOnScreen;
+    public List<string> ListOfLettersPressed => listOfLettersPressed;
+    public SpellCheck SpellCheck => spellCheck; 
 
     public HexagonStates HomeTeam1 => homeTeam1;
     public HexagonStates HomeTeam2 => homeTeam2;
@@ -45,6 +54,24 @@ public class Board : MonoBehaviour
 
     private void InitilizeComponents() {
         allHexagons = GetComponentsInChildren<Hexagon>();
+    }
+
+    public void HexagonPressed(Hexagon hex) {
+        string hexState = hex.HexagonCurrentState;
+        if (hexState == "neutral") {
+            //CurrentWordUpdate(hex.HexagonText.text);
+            if (team1Turn) {
+                hex.SetHexagonState(PressedTeam1);
+            } else {
+                hex.SetHexagonState(PressedTeam2);
+            }
+        } else if (hexState == "pressedTeam1" && team1Turn) {
+            //CurrentWordRemove(hex.HexagonText.text);
+            hex.SetHexagonState(Neutral);
+        } else if (hexState == "pressedTeam2" && !team1Turn) {
+            //CurrentWordRemove(hex.HexagonText.text);
+            hex.SetHexagonState(Neutral);
+        }
     }
 
     private void MakeAllHexagonsInvisible(){
