@@ -6,6 +6,8 @@ public class CurrentWord : MonoBehaviour
     // Fields
     [SerializeField]
     private TextMeshProUGUI currentWordText;
+
+    //Property
     public TextMeshProUGUI CurrentWordText => currentWordText;
 
     // Methods
@@ -25,9 +27,9 @@ public class CurrentWord : MonoBehaviour
 
     public void UpdateCurrentWord(string word)
     {
-        if (currentWordText != null)
+        if (CurrentWordText != null)
         {
-            currentWordText.text = word;
+            CurrentWordText.text = word;
         }
         else
         {
