@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using System.Linq;
+
 
 public class Board : MonoBehaviour
 {
@@ -21,6 +23,7 @@ public class Board : MonoBehaviour
     private HexagonStates territoryTeam1;
     [SerializeField]
     private HexagonStates territoryTeam2;
+
 
     // Fields
     private Hexagon[] allHexagons;
@@ -61,7 +64,6 @@ public class Board : MonoBehaviour
     public HexagonStates PressedTeam2 => pressedTeam2;
     public HexagonStates TerritoryTeam1 => territoryTeam1;
     public HexagonStates TerritoryTeam2 => territoryTeam2;
-
 
     // Class Methods
     void Start() {
@@ -181,7 +183,7 @@ public class Board : MonoBehaviour
     private void ProcessValidWord() {
         foreach (Hexagon hex in AllHexagons)
         {
-            //MakePressedHexagonsTerritory(hex);
+            MakePressedHexagonsTerritory(hex);
         }
 
         ClearPressedHexagonsValidWord();
@@ -197,6 +199,110 @@ public class Board : MonoBehaviour
     private void ResetWordState() {
         CurrentWordObjectOnScreen.UpdateCurrentWord("");
         ListOfLettersPressed.Clear();
+    }
+
+
+    public void MakePressedHexagonsTerritory(Hexagon hex) {
+        string hexState = hex.HexagonCurrentState;
+
+        if (hexState == "territoryTeam1" || hexState == "homeTeam1")
+        {
+            ProcessHexagonTerritory(hex, "Team1");
+        }
+        else if (hexState == "territoryTeam2" || hexState == "homeTeam2")
+        {
+            ProcessHexagonTerritory(hex, "Team2");
+        }
+    }
+
+    private void ProcessHexagonTerritory(Hexagon hex, string team) {
+        List<Hexagon> touchingHexes = hex.FindTouchingHexagons();
+
+        foreach (Hexagon touchingHex in touchingHexes)
+        {
+            string touchingHexState = touchingHex.HexagonCurrentState;
+
+            if (touchingHexState == $"pressed{team}")
+            {
+                ProcessTouchingHex(touchingHex, team);
+            }
+        }
+    }
+
+    private void ProcessTouchingHex(Hexagon touchingHex, string team) {
+        touchingHex.DeleteLetter();
+        if (team == "Team1") {
+            touchingHex.SetHexagonState(territoryTeam1);
+        } else {
+            touchingHex.SetHexagonState(territoryTeam2);
+        }
+        
+        List<Hexagon> touchingHexagonsArray = touchingHex.FindTouchingHexagons();
+        MakeTouchingHexagonsNeutral(touchingHexagonsArray);
+
+        MakePressedHexagonsTerritory(touchingHex);
+    }
+
+
+    public void MakeTouchingHexagonsNeutral(List<Hexagon> touchingHexagonsArray)
+    {
+        foreach (Hexagon touchingHexagon in touchingHexagonsArray)
+        {
+            string hexState = touchingHexagon.HexagonCurrentState;
+
+            if ((team1Turn && ShouldMakeNeutralForTeam1(hexState)) || (!team1Turn && ShouldMakeNeutralForTeam2(hexState)))
+            {
+                touchingHexagon.SetHexagonState(Neutral);
+
+                if (IsHomeState(hexState))
+                {
+                    touchingHexagon.SetLetter();
+                    SetNewHome(GetOpponentHomeState(hexState));
+                }
+            }
+        }
+    }
+
+    private bool ShouldMakeNeutralForTeam1(string hexState)
+    {
+        return hexState != "homeTeam1" && hexState != "territoryTeam1" && hexState != "pressedTeam1";
+    }
+
+    private bool ShouldMakeNeutralForTeam2(string hexState)
+    {
+        return hexState != "homeTeam2" && hexState != "territoryTeam2" && hexState != "pressedTeam2";
+    }
+
+    private bool IsHomeState(string hexState)
+    {
+        return hexState == "homeTeam1" || hexState == "homeTeam2";
+    }
+
+    private string GetOpponentHomeState(string hexState)
+    {
+        return team1Turn ? "homeTeam2" : "homeTeam1";
+    }
+
+
+    private void SetNewHome(string team) {
+        Hexagon hex = SelectRandomHexagonOfType($"territory{team[4..]}");
+        if (hex != null) {
+            ChangeTurn();
+            hex.SetHexagonState(team == "homeTeam2" ? HomeTeam2 : HomeTeam1);
+            ChangeTurn(); // Changing turn before and after so that when the new home is set, it's that player's turn, so their home doesn't turn their territory neutral
+        }
+        ChangeTurn();
+    }
+
+
+    private Hexagon SelectRandomHexagonOfType(string state){
+        List<Hexagon> targetHexes = AllHexagons.Where(hex => hex.HexagonCurrentState == state).ToList();
+        if (targetHexes.Count == 0) {
+            Debug.Log("WINNER");
+            return null;
+        } else {
+            return targetHexes[UnityEngine.Random.Range(0, targetHexes.Count)];
+        }
     }
 
 }

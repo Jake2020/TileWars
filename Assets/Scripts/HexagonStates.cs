@@ -17,5 +17,9 @@ public class HexagonStates
     // Properties
     public Color FillColor => fillColor;
 
-    public string StateName => stateName; 
+    public string StateName{
+        get => stateName;
+        set => stateName = value;
+
+    } 
 }
