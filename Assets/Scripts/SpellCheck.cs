@@ -3,7 +3,7 @@ using NetSpell.SpellChecker.Dictionary;
 using UnityEngine;
 using System.Collections.Generic;
 
-public class SpellCheck : MonoBehaviour
+public class SpellCheck
 {
     //Fields
     private readonly Spelling spelling;
@@ -30,9 +30,9 @@ public class SpellCheck : MonoBehaviour
         return word.Length > 2 && spelling.TestWord(word);
     }
 
-    public bool CanFormValidWord() {
+    public bool CanFormValidWord(Hexagon[] AllHexagons) {
         List<string> letters = new();
-        foreach (Hexagon hex in FindObjectOfType<Board>().AllHexagons) {
+        foreach (Hexagon hex in AllHexagons) {
             letters.Add(hex.HexagonText.text);
         }
         
