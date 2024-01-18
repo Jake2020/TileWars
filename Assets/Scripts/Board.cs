@@ -189,6 +189,7 @@ public class Board : MonoBehaviour
         ClearPressedHexagonsValidWord();
         ChangeTurn();
         ResetWordState();
+        Debug.Log(SpellCheck.CanFormValidWord(AllHexagons));
     }
 
     private void ProcessInvalidWord() {
