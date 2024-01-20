@@ -18,7 +18,7 @@ public class SpellCheck
     {
         wordDictionary = new WordDictionary
         {
-            DictionaryFile = Application.dataPath + "/Packages/NetSpell.2.1.7/dic/en-GB.dic"
+            DictionaryFile = Application.dataPath + "/Packages/NetSpell.2.1.7/dic/en-US.dic"
         };
         wordDictionary.Initialize();
 
@@ -35,12 +35,15 @@ public class SpellCheck
 
     private bool CanTheseLettersMakeAWord(List<string> letters) {
         IEnumerable<string> letterEnumerable = letters;
-        List<string> permutations = GetPermutations(letterEnumerable, 4).Select(perm => string.Join("", perm)).ToList();
 
-        foreach (string potentialWord in permutations) {
-            if (IsValidWord(potentialWord)) {
-                Debug.Log(potentialWord);
-                return true;
+        for (int length = 3; length <= 5; length++) {
+            List<string> permutations = GetPermutations(letterEnumerable, length).Select(perm => string.Join("", perm)).ToList();
+
+            foreach (string potentialWord in permutations) {
+                if (IsValidWord(potentialWord)) {
+                    Debug.Log(potentialWord);
+                    return true;
+                }
             }
         }
         return false;
