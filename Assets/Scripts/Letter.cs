@@ -15,7 +15,7 @@ public static class Letter
         'f', 'f',
         'g', 'g', 'g', 'g',
         'h', 'h', 'h',
-        'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i',
+        'i', 'i', 'i', 'i', 'i', 'i', 'i', 'i',
         'j',
         'k',
         'l', 'l', 'l', 'l',
@@ -35,8 +35,7 @@ public static class Letter
         'z'
     };
 
-    public static string GenerateLetter()
-    {
+    public static string GenerateLetter() {
         return Letters[random.Next(0, Letters.Count)].ToString();
     }
 }

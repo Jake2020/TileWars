@@ -30,7 +30,7 @@ public class SpellCheck
 
     //Class Methods
     public bool IsValidWord(string word) {
-        return word.Length > 2 && spelling.TestWord(word);
+        return word.Length > 2 && spelling.TestWord(word.ToUpper());
     }
 
     private bool CanTheseLettersMakeAWord(List<string> letters) {
@@ -60,7 +60,7 @@ public class SpellCheck
     }
     
     private IEnumerable<IEnumerable<T>> GetPermutationsWithDuplicates<T>(IEnumerable<T> list, int length) {
-        
+
         Dictionary<T, int> elementCounts = list.GroupBy(e => e).ToDictionary(g => g.Key, g => g.Count());
 
         IEnumerable<IEnumerable<T>> GetPermutationsInternal(int remainingLength) {
