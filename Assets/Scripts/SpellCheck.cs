@@ -37,7 +37,7 @@ public class SpellCheck
         IEnumerable<string> letterEnumerable = letters;
 
         for (int length = 3; length <= 5; length++) {
-            List<string> permutations = GetPermutations(letterEnumerable, length).Select(perm => string.Join("", perm)).ToList();
+            List<string> permutations = GetPermutationsWithDuplicates(letterEnumerable, length).Select(perm => string.Join("", perm)).ToList();
 
             foreach (string potentialWord in permutations) {
                 if (IsValidWord(potentialWord)) {
@@ -59,11 +59,25 @@ public class SpellCheck
         return CanTheseLettersMakeAWord(letters);
     }
     
-    private IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> list, int length) {
-        if (length == 1) {
-            return list.Select(t => new T[] { t });
+    private IEnumerable<IEnumerable<T>> GetPermutationsWithDuplicates<T>(IEnumerable<T> list, int length)
+    {
+        Dictionary<T, int> elementCounts = list.GroupBy(e => e).ToDictionary(g => g.Key, g => g.Count());
+
+        IEnumerable<IEnumerable<T>> GetPermutationsInternal(int remainingLength)
+        {
+            if (remainingLength == 1)
+            {
+                return list.Select(e => new T[] { e });
+            }
+
+            return GetPermutationsInternal(remainingLength - 1)
+                .SelectMany(partialPermutation =>
+                    elementCounts
+                        .Where(kv => kv.Value > partialPermutation.Count(e => EqualityComparer<T>.Default.Equals(kv.Key, e)))
+                        .Select(kv => partialPermutation.Concat(new T[] { kv.Key })));
         }
-        return GetPermutations(list, length - 1).SelectMany(t => list.Where(o => !t.Contains(o)), (t1, t2) => t1.Concat(new T[] { t2 }));
+
+        return GetPermutationsInternal(length);
     }
 }
 
