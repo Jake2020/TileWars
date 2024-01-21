@@ -59,14 +59,12 @@ public class SpellCheck
         return CanTheseLettersMakeAWord(letters);
     }
     
-    private IEnumerable<IEnumerable<T>> GetPermutationsWithDuplicates<T>(IEnumerable<T> list, int length)
-    {
+    private IEnumerable<IEnumerable<T>> GetPermutationsWithDuplicates<T>(IEnumerable<T> list, int length) {
+        
         Dictionary<T, int> elementCounts = list.GroupBy(e => e).ToDictionary(g => g.Key, g => g.Count());
 
-        IEnumerable<IEnumerable<T>> GetPermutationsInternal(int remainingLength)
-        {
-            if (remainingLength == 1)
-            {
+        IEnumerable<IEnumerable<T>> GetPermutationsInternal(int remainingLength) {
+            if (remainingLength == 1) {
                 return list.Select(e => new T[] { e });
             }
 

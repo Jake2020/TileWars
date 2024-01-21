@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using System.Linq;
+using System;
 
 
 public class Board : MonoBehaviour
@@ -190,6 +191,23 @@ public class Board : MonoBehaviour
         ChangeTurn();
         ResetWordState();
         Debug.Log(SpellCheck.CanFormValidWord(AllHexagons));
+        CheckBoardIsPlayable();
+    }
+
+    private void CheckBoardIsPlayable() {
+        if (!SpellCheck.CanFormValidWord(AllHexagons)) {
+            ShuffleLetters();
+        }
+    }
+
+    private void ShuffleLetters() {
+        foreach (Hexagon hex in AllHexagons) {
+            if (hex.HexagonCurrentState == "neutral") {
+                hex.SetLetter();
+            }
+        }
+        Debug.Log("SHUFFLING");
+        CheckBoardIsPlayable();
     }
 
     private void ProcessInvalidWord() {
@@ -206,12 +224,10 @@ public class Board : MonoBehaviour
     public void MakePressedHexagonsTerritory(Hexagon hex) {
         string hexState = hex.HexagonCurrentState;
 
-        if (hexState == "territoryTeam1" || hexState == "homeTeam1")
-        {
+        if (hexState == "territoryTeam1" || hexState == "homeTeam1") {
             ProcessHexagonTerritory(hex, "Team1");
         }
-        else if (hexState == "territoryTeam2" || hexState == "homeTeam2")
-        {
+        else if (hexState == "territoryTeam2" || hexState == "homeTeam2") {
             ProcessHexagonTerritory(hex, "Team2");
         }
     }
@@ -245,8 +261,7 @@ public class Board : MonoBehaviour
     }
 
 
-    public void MakeTouchingHexagonsNeutral(List<Hexagon> touchingHexagonsArray)
-    {
+    public void MakeTouchingHexagonsNeutral(List<Hexagon> touchingHexagonsArray) {
         foreach (Hexagon touchingHexagon in touchingHexagonsArray)
         {
             string hexState = touchingHexagon.HexagonCurrentState;
@@ -264,23 +279,19 @@ public class Board : MonoBehaviour
         }
     }
 
-    private bool ShouldMakeNeutralForTeam1(string hexState)
-    {
+    private bool ShouldMakeNeutralForTeam1(string hexState) {
         return hexState != "homeTeam1" && hexState != "territoryTeam1" && hexState != "pressedTeam1";
     }
 
-    private bool ShouldMakeNeutralForTeam2(string hexState)
-    {
+    private bool ShouldMakeNeutralForTeam2(string hexState) {
         return hexState != "homeTeam2" && hexState != "territoryTeam2" && hexState != "pressedTeam2";
     }
 
-    private bool IsHomeState(string hexState)
-    {
+    private bool IsHomeState(string hexState) {
         return hexState == "homeTeam1" || hexState == "homeTeam2";
     }
 
-    private string GetOpponentHomeState(string hexState)
-    {
+    private string GetOpponentHomeState(string hexState) {
         return team1Turn ? "homeTeam2" : "homeTeam1";
     }
 
