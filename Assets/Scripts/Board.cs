@@ -186,11 +186,10 @@ public class Board : MonoBehaviour
         {
             MakePressedHexagonsTerritory(hex);
         }
-
+        Letter.AddLetterToList(CurrentWordObjectOnScreen.CurrentWordText.text);
         ClearPressedHexagonsValidWord();
         ChangeTurn();
         ResetWordState();
-        Debug.Log(SpellCheck.CanFormValidWord(AllHexagons));
         CheckBoardIsPlayable();
     }
 

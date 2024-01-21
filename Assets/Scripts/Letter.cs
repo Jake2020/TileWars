@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public static class Letter
 {
-    private static readonly Random random = new Random();
+    private static readonly Random random = new();
 
-    private static readonly List<char> Letters = new List<char>
+    private static readonly List<char> Letters = new()
     {
         'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a',
         'b', 'b', 'b',
@@ -36,6 +37,24 @@ public static class Letter
     };
 
     public static string GenerateLetter() {
-        return Letters[random.Next(0, Letters.Count)].ToString();
+        char newLetter = Letters[random.Next(0, Letters.Count)];
+        DeleteLetterFromList(newLetter);
+        return newLetter.ToString();
+    }
+
+    public static void DeleteLetterFromList(char letter) {
+        for (int i = 0; i < Letters.Count; i++) {
+            if (Letters[i] == letter) {
+                Letters.RemoveAt(i);
+                return;
+            }
+        }
+    }
+
+    public static void AddLetterToList(string word) {
+        List<char> charList = word.ToCharArray().ToList();
+        foreach (char letter in charList) {
+            Letters.Add(letter);
+        }
     }
 }
