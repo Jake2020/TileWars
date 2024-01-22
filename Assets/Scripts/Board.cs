@@ -1,9 +1,6 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Linq;
-using System;
-
 
 public class Board : MonoBehaviour
 {
@@ -25,14 +22,13 @@ public class Board : MonoBehaviour
     [SerializeField]
     private HexagonStates territoryTeam2;
 
-
     // Fields
     private Hexagon[] allHexagons;
-    private bool bonusTurnActive;
-    private bool team1Turn = true;
+    private bool bonusTurnActive;    
     private CurrentWord currentWordObjectOnScreen; 
     private List<string> listOfLettersPressed = new();
     private SpellCheck spellCheck = new();
+    private bool team1Turn = true;
     
     // Properties
     public Hexagon[] AllHexagons
@@ -45,11 +41,6 @@ public class Board : MonoBehaviour
         get => bonusTurnActive;
         set => bonusTurnActive = value;
     }
-    public bool Team1Turn
-    {
-        get => team1Turn;
-        set => team1Turn = value;
-    }
     public CurrentWord CurrentWordObjectOnScreen
     {
         get => currentWordObjectOnScreen;
@@ -60,9 +51,14 @@ public class Board : MonoBehaviour
         get => listOfLettersPressed;
         set => listOfLettersPressed = value;
     }
-
     public SpellCheck SpellCheck => spellCheck; 
+    public bool Team1Turn
+    {
+        get => team1Turn;
+        set => team1Turn = value;
+    }        
 
+    // Hexagon States
     public HexagonStates HomeTeam1 => homeTeam1;
     public HexagonStates HomeTeam2 => homeTeam2;
     public HexagonStates Invisible => invisible;
@@ -71,6 +67,7 @@ public class Board : MonoBehaviour
     public HexagonStates PressedTeam2 => pressedTeam2;
     public HexagonStates TerritoryTeam1 => territoryTeam1;
     public HexagonStates TerritoryTeam2 => territoryTeam2;
+
 
     // Class Methods
     void Start() {
@@ -117,10 +114,6 @@ public class Board : MonoBehaviour
         }
     }
 
-    private bool IsHexagonPressed(Hexagon hex) {
-        return hex.HexagonCurrentState == "pressedTeam1" || hex.HexagonCurrentState == "pressedTeam2";
-    }
-
     private void ClearHexagon(Hexagon hex) {
         hex.DeleteLetter();
         hex.SetHexagonState(Neutral);
@@ -138,67 +131,6 @@ public class Board : MonoBehaviour
 
     private void ClearInavlidHexagon(Hexagon hex) {
         hex.SetHexagonState(Neutral);
-    }
-
-    private HexagonStates GetCurrentTeam() {
-        if (Team1Turn) {
-            return PressedTeam1;
-        } else {
-            return PressedTeam2;
-        }
-    }
-
-    public void HexagonPressed(Hexagon hex) {
-        string hexState = hex.HexagonCurrentState;
-        if (hexState == "neutral") {
-            CurrentWordUpdate(hex.HexagonText.text);
-            hex.SetHexagonState(GetCurrentTeam());
-
-        } else if (hexState == "pressedTeam1" || hexState == "pressedTeam2") {
-            CurrentWordRemove(hex.HexagonText.text);
-            hex.SetHexagonState(Neutral);
-
-        } else {
-            //if state is home/territory/invisible then do nothing
-        }
-    }
-
-    private void MakeAllHexagonsInvisible(){
-        foreach (Hexagon hex in AllHexagons){ 
-            hex.SetHexagonState(Invisible);
-        }
-    }
-
-    private void SetHomeBases() {
-        allHexagons[9].SetHexagonState(HomeTeam1);
-        allHexagons[30].SetHexagonState(HomeTeam2);
-    }
-
-    public void SubmitButtonPressed() {
-        bool isValidWord = spellCheck.IsValidWord(CurrentWordObjectOnScreen.CurrentWordText.text);
-
-        if (isValidWord)
-        {
-            ProcessValidWord();
-        }
-        else
-        {
-            ProcessInvalidWord();
-        }
-    }
-
-    private void ProcessValidWord() {
-        foreach (Hexagon hex in AllHexagons)
-        {
-            MakePressedHexagonsTerritory(hex);
-        }
-        Letter.AddLetterToList(CurrentWordObjectOnScreen.CurrentWordText.text);
-        ClearPressedHexagonsValidWord();
-        ChangeTurn();
-        ResetWordState();
-        CheckBoardIsPlayable();
-        CheckHomesAreSet();
-        CheckBonusTurn();
     }
 
     private void CheckBonusTurn() {
@@ -234,26 +166,46 @@ public class Board : MonoBehaviour
         }
     }
 
-    private void ShuffleLetters() {
-        foreach (Hexagon hex in AllHexagons) {
-            if (hex.HexagonCurrentState == "neutral") {
-                hex.SetLetter();
-            }
+    private HexagonStates GetCurrentTeam() {
+        if (Team1Turn) {
+            return PressedTeam1;
+        } else {
+            return PressedTeam2;
         }
-        Debug.Log("SHUFFLING");
-        CheckBoardIsPlayable();
     }
 
-    private void ProcessInvalidWord() {
-        ClearPressedHexagonsInvaildWord();
-        ResetWordState();
+    private string GetOpponentHomeState(string hexState) {
+        return team1Turn ? "homeTeam2" : "homeTeam1";
     }
 
-    private void ResetWordState() {
-        CurrentWordObjectOnScreen.UpdateCurrentWord("");
-        ListOfLettersPressed.Clear();
+    public void HexagonPressed(Hexagon hex) {
+        string hexState = hex.HexagonCurrentState;
+        if (hexState == "neutral") {
+            CurrentWordUpdate(hex.HexagonText.text);
+            hex.SetHexagonState(GetCurrentTeam());
+
+        } else if (hexState == "pressedTeam1" || hexState == "pressedTeam2") {
+            CurrentWordRemove(hex.HexagonText.text);
+            hex.SetHexagonState(Neutral);
+
+        } else {
+            //if state is home/territory/invisible then do nothing
+        }
     }
 
+    private bool IsHexagonPressed(Hexagon hex) {
+        return hex.HexagonCurrentState == "pressedTeam1" || hex.HexagonCurrentState == "pressedTeam2";
+    }
+
+    private bool IsHomeState(string hexState) {
+        return hexState == "homeTeam1" || hexState == "homeTeam2";
+    }
+
+    private void MakeAllHexagonsInvisible(){
+        foreach (Hexagon hex in AllHexagons){ 
+            hex.SetHexagonState(Invisible);
+        }
+    }
 
     public void MakePressedHexagonsTerritory(Hexagon hex) {
         string hexState = hex.HexagonCurrentState;
@@ -264,6 +216,44 @@ public class Board : MonoBehaviour
         else if (hexState == "territoryTeam2" || hexState == "homeTeam2") {
             ProcessHexagonTerritory(hex, "Team2");
         }
+    }
+
+    public void MakeTouchingHexagonsNeutral(List<Hexagon> touchingHexagonsArray) {
+        foreach (Hexagon touchingHexagon in touchingHexagonsArray)
+        {
+            string hexState = touchingHexagon.HexagonCurrentState;
+
+            if ((team1Turn && ShouldMakeNeutralForTeam1(hexState)) || (!team1Turn && ShouldMakeNeutralForTeam2(hexState)))
+            {
+                touchingHexagon.SetHexagonState(Neutral);
+
+                if (IsHomeState(hexState))
+                {
+                    BonusTurnActive = true;
+                    touchingHexagon.SetLetter();
+                    SetNewHome(GetOpponentHomeState(hexState));
+                }
+            }
+        }
+    }
+
+    private void ProcessValidWord() {
+        foreach (Hexagon hex in AllHexagons)
+        {
+            MakePressedHexagonsTerritory(hex);
+        }
+        Letter.AddLetterToList(CurrentWordObjectOnScreen.CurrentWordText.text);
+        ClearPressedHexagonsValidWord();
+        ChangeTurn();
+        ResetWordState();
+        CheckBoardIsPlayable();
+        CheckHomesAreSet();
+        CheckBonusTurn();
+    }
+
+    private void ProcessInvalidWord() {
+        ClearPressedHexagonsInvaildWord();
+        ResetWordState();
     }
 
     private void ProcessHexagonTerritory(Hexagon hex, string team) {
@@ -294,24 +284,37 @@ public class Board : MonoBehaviour
         MakePressedHexagonsTerritory(touchingHex);
     }
 
+    private void ResetWordState() {
+        CurrentWordObjectOnScreen.UpdateCurrentWord("");
+        ListOfLettersPressed.Clear();
+    }
 
-    public void MakeTouchingHexagonsNeutral(List<Hexagon> touchingHexagonsArray) {
-        foreach (Hexagon touchingHexagon in touchingHexagonsArray)
+    private void SetHomeBases() {
+        allHexagons[9].SetHexagonState(HomeTeam1);
+        allHexagons[30].SetHexagonState(HomeTeam2);
+    }
+
+    public void SubmitButtonPressed() {
+        bool isValidWord = spellCheck.IsValidWord(CurrentWordObjectOnScreen.CurrentWordText.text);
+
+        if (isValidWord)
         {
-            string hexState = touchingHexagon.HexagonCurrentState;
+            ProcessValidWord();
+        }
+        else
+        {
+            ProcessInvalidWord();
+        }
+    }
 
-            if ((team1Turn && ShouldMakeNeutralForTeam1(hexState)) || (!team1Turn && ShouldMakeNeutralForTeam2(hexState)))
-            {
-                touchingHexagon.SetHexagonState(Neutral);
-
-                if (IsHomeState(hexState))
-                {
-                    BonusTurnActive = true;
-                    touchingHexagon.SetLetter();
-                    SetNewHome(GetOpponentHomeState(hexState));
-                }
+    private void ShuffleLetters() {
+        foreach (Hexagon hex in AllHexagons) {
+            if (hex.HexagonCurrentState == "neutral") {
+                hex.SetLetter();
             }
         }
+        Debug.Log("SHUFFLING");
+        CheckBoardIsPlayable();
     }
 
     private bool ShouldMakeNeutralForTeam1(string hexState) {
@@ -322,15 +325,6 @@ public class Board : MonoBehaviour
         return hexState != "homeTeam2" && hexState != "territoryTeam2" && hexState != "pressedTeam2";
     }
 
-    private bool IsHomeState(string hexState) {
-        return hexState == "homeTeam1" || hexState == "homeTeam2";
-    }
-
-    private string GetOpponentHomeState(string hexState) {
-        return team1Turn ? "homeTeam2" : "homeTeam1";
-    }
-
-
     private void SetNewHome(string team) {
         Hexagon hex = SelectRandomHexagonOfType($"territory{team[4..]}");
         if (hex != null && !BonusTurnActive) {
@@ -339,7 +333,6 @@ public class Board : MonoBehaviour
             ChangeTurn(); // Changing turn before and after so that when the new home is set, it's that player's turn, so their home doesn't turn their territory neutral
         }
     }
-
 
     private Hexagon SelectRandomHexagonOfType(string state){
         List<Hexagon> targetHexes = AllHexagons.Where(hex => hex.HexagonCurrentState == state).ToList();
@@ -350,5 +343,4 @@ public class Board : MonoBehaviour
             return targetHexes[UnityEngine.Random.Range(0, targetHexes.Count)];
         }
     }
-
 }

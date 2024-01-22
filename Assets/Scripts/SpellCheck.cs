@@ -3,17 +3,14 @@ using NetSpell.SpellChecker.Dictionary;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Collections;
-using Unity.VisualScripting;
-using UnityEngine.Events;
 
 public class SpellCheck
 {
-    //Fields
+    // Fields
     private readonly Spelling spelling;
     private readonly WordDictionary wordDictionary;
 
-    //Constructor
+    // Constructor
     public SpellCheck()
     {
         wordDictionary = new WordDictionary
@@ -28,11 +25,7 @@ public class SpellCheck
         };
     }
 
-    //Class Methods
-    public bool IsValidWord(string word) {
-        return word.Length > 2 && spelling.TestWord(word.ToUpper());
-    }
-
+    // Class Methods    
     private bool CanTheseLettersMakeAWord(List<string> letters) {
         IEnumerable<string> letterEnumerable = letters;
 
@@ -76,6 +69,10 @@ public class SpellCheck
         }
 
         return GetPermutationsInternal(length);
+    }
+
+    public bool IsValidWord(string word) {
+        return word.Length > 2 && spelling.TestWord(word.ToUpper());
     }
 }
 

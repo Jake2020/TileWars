@@ -10,7 +10,7 @@ public class CurrentWord : MonoBehaviour
     //Property
     public TextMeshProUGUI CurrentWordText => currentWordText;
 
-    // Methods
+    // Class Methods
     private void Awake()
     {
         InitializeComponents();

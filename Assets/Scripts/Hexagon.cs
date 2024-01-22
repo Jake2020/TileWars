@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,6 +36,7 @@ public class Hexagon : MonoBehaviour
     public float HexagonY => hexagonY;
     public float HexagonZ => hexagonZ;
 
+    // Class Methods
     void Awake() {
         InitilizeComponents();
         hexagonButton.onClick.AddListener(() => boardObject.HexagonPressed(this));
@@ -56,10 +55,6 @@ public class Hexagon : MonoBehaviour
 
     public void DeleteLetter(){
         HexagonText.text = "";
-    }
-
-    public void SetLetter(){
-        HexagonText.text = Letter.GenerateLetter();
     }
 
     public List<Hexagon> FindTouchingHexagons() {
@@ -84,6 +79,21 @@ public class Hexagon : MonoBehaviour
         return touchingHexagonsArray;
     } 
 
+    public void MakeTouchingHexagonsNeutralAroundHome() {
+        List<Hexagon> touchingHexagons = FindTouchingHexagons();
+        foreach (Hexagon touchingHexagon in touchingHexagons) {
+            string hexState = touchingHexagon.HexagonCurrentState;
+
+            if (hexState == "invisible") {
+                touchingHexagon.SetHexagonState(boardObject.Neutral);
+            }
+        }
+    }
+
+    public void SetLetter(){
+        HexagonText.text = Letter.GenerateLetter();
+    }
+
     public void SetHexagonState(HexagonStates state) {
         switch (state.StateName)
         {
@@ -106,16 +116,5 @@ public class Hexagon : MonoBehaviour
 
         HexagonImage.color = state.FillColor;
         HexagonCurrentState = state.StateName;
-    }  
-
-    public void MakeTouchingHexagonsNeutralAroundHome() {
-        List<Hexagon> touchingHexagons = FindTouchingHexagons();
-        foreach (Hexagon touchingHexagon in touchingHexagons) {
-            string hexState = touchingHexagon.HexagonCurrentState;
-
-            if (hexState == "invisible") {
-                touchingHexagon.SetHexagonState(boardObject.Neutral);
-            }
-        }
-    }  
+    }
 }

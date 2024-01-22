@@ -36,10 +36,11 @@ public static class Letter
         'z'
     };
 
-    public static string GenerateLetter() {
-        char newLetter = Letters[random.Next(0, Letters.Count)];
-        DeleteLetterFromList(newLetter);
-        return newLetter.ToString();
+    public static void AddLetterToList(string word) {
+        List<char> charList = word.ToCharArray().ToList();
+        foreach (char letter in charList) {
+            Letters.Add(letter);
+        }
     }
 
     public static void DeleteLetterFromList(char letter) {
@@ -51,10 +52,9 @@ public static class Letter
         }
     }
 
-    public static void AddLetterToList(string word) {
-        List<char> charList = word.ToCharArray().ToList();
-        foreach (char letter in charList) {
-            Letters.Add(letter);
-        }
+    public static string GenerateLetter() {
+        char newLetter = Letters[random.Next(0, Letters.Count)];
+        DeleteLetterFromList(newLetter);
+        return newLetter.ToString();
     }
 }
