@@ -28,6 +28,7 @@ public class Board : MonoBehaviour
 
     // Fields
     private Hexagon[] allHexagons;
+    private bool bonusTurnActive;
     private bool team1Turn = true;
     private CurrentWord currentWordObjectOnScreen; 
     private List<string> listOfLettersPressed = new();
@@ -38,6 +39,11 @@ public class Board : MonoBehaviour
     {
         get => allHexagons;
         set => allHexagons = value;
+    }
+    public bool BonusTurnActive
+    {
+        get => bonusTurnActive;
+        set => bonusTurnActive = value;
     }
     public bool Team1Turn
     {
@@ -191,6 +197,35 @@ public class Board : MonoBehaviour
         ChangeTurn();
         ResetWordState();
         CheckBoardIsPlayable();
+        CheckHomesAreSet();
+        CheckBonusTurn();
+    }
+
+    private void CheckBonusTurn() {
+        if (BonusTurnActive == true) {
+            ChangeTurn();
+            BonusTurnActive = false;
+
+        }
+    }
+
+    private void CheckHomesAreSet() {
+        bool noHomeTeam1 = true;
+        bool noHomeTeam2 = true;
+        foreach (Hexagon hex in AllHexagons) {
+            if (hex.HexagonCurrentState == "homeTeam1") {
+                noHomeTeam1 = false;
+            }
+            if (hex.HexagonCurrentState == "homeTeam2") {
+                noHomeTeam2 = false;
+            }
+        }
+        if (noHomeTeam1 == true) {
+            SetNewHome("homeTeam1");
+        }
+        if (noHomeTeam2 == true) {
+            SetNewHome("homeTeam2");
+        }
     }
 
     private void CheckBoardIsPlayable() {
@@ -271,6 +306,7 @@ public class Board : MonoBehaviour
 
                 if (IsHomeState(hexState))
                 {
+                    BonusTurnActive = true;
                     touchingHexagon.SetLetter();
                     SetNewHome(GetOpponentHomeState(hexState));
                 }
@@ -297,12 +333,11 @@ public class Board : MonoBehaviour
 
     private void SetNewHome(string team) {
         Hexagon hex = SelectRandomHexagonOfType($"territory{team[4..]}");
-        if (hex != null) {
+        if (hex != null && !BonusTurnActive) {
             ChangeTurn();
             hex.SetHexagonState(team == "homeTeam2" ? HomeTeam2 : HomeTeam1);
             ChangeTurn(); // Changing turn before and after so that when the new home is set, it's that player's turn, so their home doesn't turn their territory neutral
         }
-        ChangeTurn();
     }
 
 
