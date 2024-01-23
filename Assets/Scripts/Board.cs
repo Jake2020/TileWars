@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class Board : MonoBehaviour
 {
@@ -199,6 +200,10 @@ public class Board : MonoBehaviour
 
     private bool IsHomeState(string hexState) {
         return hexState == "homeTeam1" || hexState == "homeTeam2";
+    }
+
+    public void LoadMainMenu() {
+        SceneManager.LoadScene("Main Menu Scene");
     }
 
     private void MakeAllHexagonsInvisible(){
