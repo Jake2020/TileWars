@@ -1,25 +1,39 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 public class CurrentWord : MonoBehaviour
 {
+    // Fields
+    [SerializeField]
     private TextMeshProUGUI currentWordText;
 
-    public TextMeshProUGUI CurrentWordText{
-        get{
-            return currentWordText;
-        }
-        private set{}
-    }
+    //Property
+    public TextMeshProUGUI CurrentWordText => currentWordText;
 
-    void Awake()
+    // Class Methods
+    private void Awake()
     {
-        currentWordText = GetComponentInChildren<TextMeshProUGUI>(); //pull text component into variable
+        InitializeComponents();
     }
 
-    public void UpdateCurrentWord(string word){
-        currentWordText.text = word;
+    private void InitializeComponents()
+    {
+        currentWordText = GetComponentInChildren<TextMeshProUGUI>();
+        if (currentWordText == null)
+        {
+            Debug.LogError("TextMeshProUGUI component not found in children.", this);
+        }
+    }
+
+    public void UpdateCurrentWord(string word)
+    {
+        if (CurrentWordText != null)
+        {
+            CurrentWordText.text = word;
+        }
+        else
+        {
+            Debug.LogError("TextMeshProUGUI component not initialized.", this);
+        }
     }
 }

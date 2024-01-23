@@ -1,218 +1,351 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class Board : MonoBehaviour
 {
-    public SpellCheck spellCheck = new SpellCheck();
+    // Hexagon States   
+    [SerializeField]
+    private HexagonStates homeTeam1;
+    [SerializeField]
+    private HexagonStates homeTeam2;
+    [SerializeField]
+    private HexagonStates invisible;
+    [SerializeField]
+    private HexagonStates neutral;
+    [SerializeField]
+    private HexagonStates pressedTeam1;
+    [SerializeField]
+    private HexagonStates pressedTeam2;
+    [SerializeField]
+    private HexagonStates territoryTeam1;
+    [SerializeField]
+    private HexagonStates territoryTeam2;
 
-    private Hexagon[] allHexagons; //array for all hexagon game objects
-
-    public Board boardObject; //variable for board object instance
-
-    public bool team1Turn = true;
-
-    public CurrentWord theCurrentWord;
-
-    public List<string> wordInProgress;
-
-    public Hexagon.HexagonStates homeTeam1;
-    public Hexagon.HexagonStates homeTeam2;
-    public Hexagon.HexagonStates invisible;
-    public Hexagon.HexagonStates neutral;
-    public Hexagon.HexagonStates pressedTeam1;
-    public Hexagon.HexagonStates pressedTeam2;
-    public Hexagon.HexagonStates territoryTeam1;
-    public Hexagon.HexagonStates territoryTeam2; //the states show up in unity inspector in board, can be edited there
-   
-    void Start()
+    // Fields
+    private Hexagon[] allHexagons;
+    private bool bonusTurnActive;    
+    private CurrentWord currentWordObjectOnScreen; 
+    private List<string> listOfLettersPressed = new();
+    private SpellCheck spellCheck = new();
+    private bool team1Turn = true;
+    
+    // Properties
+    public Hexagon[] AllHexagons
     {
-        allHexagons = GetComponentsInChildren<Hexagon>(); //pulls in the hexagon game objects into the array
-        boardObject = FindObjectOfType<Board>(); //pulls board object instance into variable
+        get => allHexagons;
+        set => allHexagons = value;
+    }
+    public bool BonusTurnActive
+    {
+        get => bonusTurnActive;
+        set => bonusTurnActive = value;
+    }
+    public CurrentWord CurrentWordObjectOnScreen
+    {
+        get => currentWordObjectOnScreen;
+        set => currentWordObjectOnScreen = value;
+    }
+    public List<string> ListOfLettersPressed 
+    {
+        get => listOfLettersPressed;
+        set => listOfLettersPressed = value;
+    }
+    public SpellCheck SpellCheck => spellCheck; 
+    public bool Team1Turn
+    {
+        get => team1Turn;
+        set => team1Turn = value;
+    }        
+
+    // Hexagon States
+    public HexagonStates HomeTeam1 => homeTeam1;
+    public HexagonStates HomeTeam2 => homeTeam2;
+    public HexagonStates Invisible => invisible;
+    public HexagonStates Neutral => neutral;
+    public HexagonStates PressedTeam1 => pressedTeam1;
+    public HexagonStates PressedTeam2 => pressedTeam2;
+    public HexagonStates TerritoryTeam1 => territoryTeam1;
+    public HexagonStates TerritoryTeam2 => territoryTeam2;
+
+
+    // Class Methods
+    void Start() {
+        InitilizeComponents();
+        MakeAllHexagonsInvisible();
+        SetHomeBases();       
+    }
+
+    private void InitilizeComponents() {
+        allHexagons = GetComponentsInChildren<Hexagon>();
         spellCheck = new SpellCheck();
-        theCurrentWord = GetComponentInChildren<CurrentWord>();
-
-        MakeAllHexagonsInvisible(); //at game start, set hexes to invisible
-
-        allHexagons[9].SetHexagonState(homeTeam1, allHexagons, boardObject); //setting home for team 1
-        allHexagons[30].SetHexagonState(homeTeam2, allHexagons, boardObject); //setting home for team 2
+        CurrentWordObjectOnScreen = GetComponentInChildren<CurrentWord>();
     }
 
-    void Update() //main game loop, is called every tick
-    {
-        
-    }
-
-    private void ClearPressedHexagons(){
-        foreach (Hexagon hex in allHexagons){
-            if (hex.HexagonCurrentState == "pressedTeam1" || hex.HexagonCurrentState == "pressedTeam2"){
-                hex.DeleteLetter();
-                hex.SetHexagonState(neutral, allHexagons, boardObject);
-            }
+    public void ChangeTurn() { 
+        if (Team1Turn){
+            Team1Turn = false;
+        } else{
+            Team1Turn = true;
         }
     }
 
-    private void ClearPressedHexagonsIncorrect(){ //used when someone guesses incorrect word
-        foreach (Hexagon hex in allHexagons){
-            if (hex.HexagonCurrentState == "pressedTeam1" || hex.HexagonCurrentState == "pressedTeam2"){
-                hex.SetHexagonState(neutral, allHexagons, boardObject);
-            }
-        }
+    private void CurrentWordUpdate(string letter) {
+        ListOfLettersPressed.Add(letter);
+        string word = string.Join("", ListOfLettersPressed);
+        CurrentWordObjectOnScreen.UpdateCurrentWord(word);
     }
 
-    private void CurrentWordUpdate(string letter){
-        wordInProgress.Add(letter);
-        string word = string.Join("", wordInProgress);
-        theCurrentWord.UpdateCurrentWord(word);
-    }
     private void CurrentWordRemove(string letter){
-        wordInProgress.Reverse();
-        wordInProgress.Remove(letter);
-        wordInProgress.Reverse();
-        string word = string.Join("", wordInProgress);
-        theCurrentWord.UpdateCurrentWord(word);
+        ListOfLettersPressed.Reverse();
+        ListOfLettersPressed.Remove(letter);
+        ListOfLettersPressed.Reverse();
+        string word = string.Join("", ListOfLettersPressed);
+        CurrentWordObjectOnScreen.UpdateCurrentWord(word);
     }
 
-    private void MakeAllHexagonsInvisible(){ //loop through all hexes and make them invisible
-        foreach (Hexagon hex in allHexagons){ 
-            hex.SetHexagonState(invisible, allHexagons, boardObject);
-        }
-    }
-
-    public void MakeTouchingHexagonsNeutral(List<Hexagon> touchingHexagonsArray){ //loop through array of touching hexagons, and make them all neutral when applicable (eg not replacing own home)
-        foreach (Hexagon touchingHexagon in touchingHexagonsArray){
-            string hexState = touchingHexagon.HexagonCurrentState;
-            if (team1Turn && hexState != "homeTeam1" && hexState != "territoryTeam1" && hexState != "pressedTeam1" ){
-                touchingHexagon.SetHexagonState(boardObject.neutral, allHexagons, boardObject);
-
-                if (hexState == "homeTeam2"){
-                    touchingHexagon.SetLetter();
-                    SetNewHome("homeTeam2");
-                }
-            }
-            if (!team1Turn && hexState != "homeTeam2" && hexState != "territoryTeam2" && hexState != "pressedTeam2" ){
-                touchingHexagon.SetHexagonState(boardObject.neutral, allHexagons, boardObject);
-
-                if (hexState == "homeTeam1"){
-                    touchingHexagon.SetLetter();
-                    SetNewHome("homeTeam1");
-                }
+    private void ClearPressedHexagonsValidWord() {
+        foreach (Hexagon hex in allHexagons)
+        {
+            if (IsHexagonPressed(hex))
+            {
+                ClearHexagon(hex);
             }
         }
     }
 
-    public void MakePressedHexagonsTerritory(Hexagon hex){ //go through all hexagons, any that are in a pressed state become territory, also update the neighboring hexagons 
-        
-            if (hex.HexagonCurrentState == "territoryTeam1" || hex.HexagonCurrentState ==  "homeTeam1"){
-                List<Hexagon> touchingHexes = hex.FindTouchingHexagons(allHexagons, boardObject);
-                foreach (Hexagon touchingHex in touchingHexes){
-                    if (touchingHex.HexagonCurrentState == "pressedTeam1"){
-                        touchingHex.DeleteLetter(); //make hex empty again
-
-                        touchingHex.SetHexagonState(territoryTeam1, allHexagons, boardObject); //set to territory
-                        List<Hexagon> touchingHexagonsArray = touchingHex.FindTouchingHexagons(allHexagons, boardObject); //find hexes touching the new territory hex 
-                        MakeTouchingHexagonsNeutral(touchingHexagonsArray); //new territory hexes neighbors become neutral if applicable
-                        MakePressedHexagonsTerritory(touchingHex);
-                    }
-                }               
-            }
-            if (hex.HexagonCurrentState == "territoryTeam2" || hex.HexagonCurrentState ==  "homeTeam2"){
-                List<Hexagon> touchingHexes = hex.FindTouchingHexagons(allHexagons, boardObject);
-                foreach (Hexagon touchingHex in touchingHexes){
-                    if (touchingHex.HexagonCurrentState == "pressedTeam2"){
-                        touchingHex.DeleteLetter(); //make hex empty again
-
-                        touchingHex.SetHexagonState(territoryTeam2, allHexagons, boardObject); //set to territory
-                        List<Hexagon> touchingHexagonsArray = touchingHex.FindTouchingHexagons(allHexagons, boardObject); //find hexes touching the new territory hex 
-                        MakeTouchingHexagonsNeutral(touchingHexagonsArray); //new territory hexes neighbors become neutral if applicable
-                        MakePressedHexagonsTerritory(touchingHex);
-                    }
-                }               
-            }
-        
+    private void ClearHexagon(Hexagon hex) {
+        hex.DeleteLetter();
+        hex.SetHexagonState(Neutral);
     }
 
-    public void ChangeTurn(){ //flip the turn bool to the other state, indicating its the other players turn
-        if (team1Turn){
-            team1Turn = false;
-        } else{
-            team1Turn = true;
+    private void ClearPressedHexagonsInvaildWord() {
+        foreach (Hexagon hex in allHexagons)
+        {
+            if (IsHexagonPressed(hex))
+            {
+                ClearInavlidHexagon(hex);
+            }
         }
     }
 
-    public void HexagonPressed(Hexagon hex){
+    private void ClearInavlidHexagon(Hexagon hex) {
+        hex.SetHexagonState(Neutral);
+    }
 
+    private void CheckBonusTurn() {
+        if (BonusTurnActive == true) {
+            ChangeTurn();
+            BonusTurnActive = false;
+
+        }
+    }
+
+    private void CheckHomesAreSet() {
+        bool noHomeTeam1 = true;
+        bool noHomeTeam2 = true;
+        foreach (Hexagon hex in AllHexagons) {
+            if (hex.HexagonCurrentState == "homeTeam1") {
+                noHomeTeam1 = false;
+            }
+            if (hex.HexagonCurrentState == "homeTeam2") {
+                noHomeTeam2 = false;
+            }
+        }
+        if (noHomeTeam1 == true) {
+            SetNewHome("homeTeam1");
+        }
+        if (noHomeTeam2 == true) {
+            SetNewHome("homeTeam2");
+        }
+    }
+
+    private void CheckBoardIsPlayable() {
+        if (!SpellCheck.CanFormValidWord(AllHexagons)) {
+            ShuffleLetters();
+        }
+    }
+
+    private HexagonStates GetCurrentTeam() {
+        if (Team1Turn) {
+            return PressedTeam1;
+        } else {
+            return PressedTeam2;
+        }
+    }
+
+    private string GetOpponentHomeState(string hexState) {
+        return team1Turn ? "homeTeam2" : "homeTeam1";
+    }
+
+    public void HexagonPressed(Hexagon hex) {
         string hexState = hex.HexagonCurrentState;
-        if (hexState == "neutral" && team1Turn){
+        if (hexState == "neutral") {
             CurrentWordUpdate(hex.HexagonText.text);
-            hex.SetHexagonState(boardObject.pressedTeam1, allHexagons, boardObject);
-        }
-        if (hexState == "neutral" && !team1Turn){
-            CurrentWordUpdate(hex.HexagonText.text);
-            hex.SetHexagonState(boardObject.pressedTeam2, allHexagons, boardObject);
-        }
-        if (hexState == "pressedTeam1" && team1Turn){
-            CurrentWordRemove(hex.HexagonText.text);
-            hex.SetHexagonState(boardObject.neutral, allHexagons, boardObject);
-        }
-        if (hexState == "pressedTeam2" && !team1Turn){
-            CurrentWordRemove(hex.HexagonText.text);
-            hex.SetHexagonState(boardObject.neutral, allHexagons, boardObject);
-        }
+            hex.SetHexagonState(GetCurrentTeam());
 
+        } else if (hexState == "pressedTeam1" || hexState == "pressedTeam2") {
+            CurrentWordRemove(hex.HexagonText.text);
+            hex.SetHexagonState(Neutral);
+
+        } else {
+            //if state is home/territory/invisible then do nothing
+        }
     }
 
-    private void SetNewHome(string team){
-        if (team == "homeTeam2"){
-            Hexagon hex = SelectRandomHexagonOfType("territoryTeam2");
-            if(hex){
-                ChangeTurn();
-                hex.SetHexagonState(homeTeam2, allHexagons, boardObject);
-                ChangeTurn(); //changing turn before and after so that when the new home is set, its that players turn, so their home doesnt turn their territory neutral
-            }
-        } else{
-            Hexagon hex = SelectRandomHexagonOfType("territoryTeam1");
-            if(hex){
-                ChangeTurn();
-                hex.SetHexagonState(homeTeam1, allHexagons, boardObject);
-                ChangeTurn();
+    private bool IsHexagonPressed(Hexagon hex) {
+        return hex.HexagonCurrentState == "pressedTeam1" || hex.HexagonCurrentState == "pressedTeam2";
+    }
+
+    private bool IsHomeState(string hexState) {
+        return hexState == "homeTeam1" || hexState == "homeTeam2";
+    }
+
+    public void LoadMainMenu() {
+        SceneManager.LoadScene("Main Menu Scene");
+    }
+
+    private void MakeAllHexagonsInvisible(){
+        foreach (Hexagon hex in AllHexagons){ 
+            hex.SetHexagonState(Invisible);
+        }
+    }
+
+    public void MakePressedHexagonsTerritory(Hexagon hex) {
+        string hexState = hex.HexagonCurrentState;
+
+        if (hexState == "territoryTeam1" || hexState == "homeTeam1") {
+            ProcessHexagonTerritory(hex, "Team1");
+        }
+        else if (hexState == "territoryTeam2" || hexState == "homeTeam2") {
+            ProcessHexagonTerritory(hex, "Team2");
+        }
+    }
+
+    public void MakeTouchingHexagonsNeutral(List<Hexagon> touchingHexagonsArray) {
+        foreach (Hexagon touchingHexagon in touchingHexagonsArray)
+        {
+            string hexState = touchingHexagon.HexagonCurrentState;
+
+            if ((team1Turn && ShouldMakeNeutralForTeam1(hexState)) || (!team1Turn && ShouldMakeNeutralForTeam2(hexState)))
+            {
+                touchingHexagon.SetHexagonState(Neutral);
+
+                if (IsHomeState(hexState))
+                {
+                    BonusTurnActive = true;
+                    touchingHexagon.SetLetter();
+                    SetNewHome(GetOpponentHomeState(hexState));
+                }
             }
         }
+    }
+
+    private void ProcessValidWord() {
+        foreach (Hexagon hex in AllHexagons)
+        {
+            MakePressedHexagonsTerritory(hex);
+        }
+        Letter.AddLetterToList(CurrentWordObjectOnScreen.CurrentWordText.text);
+        ClearPressedHexagonsValidWord();
         ChangeTurn();
+        ResetWordState();
+        CheckBoardIsPlayable();
+        CheckHomesAreSet();
+        CheckBonusTurn();
+    }
+
+    private void ProcessInvalidWord() {
+        ClearPressedHexagonsInvaildWord();
+        ResetWordState();
+    }
+
+    private void ProcessHexagonTerritory(Hexagon hex, string team) {
+        List<Hexagon> touchingHexes = hex.FindTouchingHexagons();
+
+        foreach (Hexagon touchingHex in touchingHexes)
+        {
+            string touchingHexState = touchingHex.HexagonCurrentState;
+
+            if (touchingHexState == $"pressed{team}")
+            {
+                ProcessTouchingHex(touchingHex, team);
+            }
+        }
+    }
+
+    private void ProcessTouchingHex(Hexagon touchingHex, string team) {
+        touchingHex.DeleteLetter();
+        if (team == "Team1") {
+            touchingHex.SetHexagonState(territoryTeam1);
+        } else {
+            touchingHex.SetHexagonState(territoryTeam2);
+        }
+        
+        List<Hexagon> touchingHexagonsArray = touchingHex.FindTouchingHexagons();
+        MakeTouchingHexagonsNeutral(touchingHexagonsArray);
+
+        MakePressedHexagonsTerritory(touchingHex);
+    }
+
+    private void ResetWordState() {
+        CurrentWordObjectOnScreen.UpdateCurrentWord("");
+        ListOfLettersPressed.Clear();
+    }
+
+    private void SetHomeBases() {
+        allHexagons[9].SetHexagonState(HomeTeam1);
+        allHexagons[30].SetHexagonState(HomeTeam2);
+    }
+
+    public void SubmitButtonPressed() {
+        bool isValidWord = spellCheck.IsValidWord(CurrentWordObjectOnScreen.CurrentWordText.text);
+
+        if (isValidWord)
+        {
+            ProcessValidWord();
+        }
+        else
+        {
+            ProcessInvalidWord();
+        }
+    }
+
+    private void ShuffleLetters() {
+        foreach (Hexagon hex in AllHexagons) {
+            if (hex.HexagonCurrentState == "neutral") {
+                hex.SetLetter();
+            }
+        }
+        Debug.Log("SHUFFLING");
+        CheckBoardIsPlayable();
+    }
+
+    private bool ShouldMakeNeutralForTeam1(string hexState) {
+        return hexState != "homeTeam1" && hexState != "territoryTeam1" && hexState != "pressedTeam1";
+    }
+
+    private bool ShouldMakeNeutralForTeam2(string hexState) {
+        return hexState != "homeTeam2" && hexState != "territoryTeam2" && hexState != "pressedTeam2";
+    }
+
+    private void SetNewHome(string team) {
+        Hexagon hex = SelectRandomHexagonOfType($"territory{team[4..]}");
+        if (hex != null && !BonusTurnActive) {
+            ChangeTurn();
+            hex.SetHexagonState(team == "homeTeam2" ? HomeTeam2 : HomeTeam1);
+            ChangeTurn(); // Changing turn before and after so that when the new home is set, it's that player's turn, so their home doesn't turn their territory neutral
+        }
     }
 
     private Hexagon SelectRandomHexagonOfType(string state){
-        List<Hexagon> targetHexes = new List<Hexagon>();
-        foreach (Hexagon hex in allHexagons){
-            if (hex.HexagonCurrentState == state){
-                targetHexes.Add(hex);
-            }
-        }
-        if (targetHexes.Count == 0){
+        List<Hexagon> targetHexes = AllHexagons.Where(hex => hex.HexagonCurrentState == state).ToList();
+        if (targetHexes.Count == 0) {
             Debug.Log("WINNER");
             return null;
-        } else{
-            return targetHexes[UnityEngine.Random.Range(0, targetHexes.Count)];
-        }
-    }
-    
-
-    public void SubmitButtonPressed(){
-        
-        if (spellCheck.IsValidWord(theCurrentWord.CurrentWordText.text)){
-           foreach (Hexagon hex in allHexagons){
-                MakePressedHexagonsTerritory(hex);
-            }
-        ClearPressedHexagons();
-        ChangeTurn();
-        theCurrentWord.UpdateCurrentWord("");
-        wordInProgress.Clear();
         } else {
-            ClearPressedHexagonsIncorrect();
-            theCurrentWord.UpdateCurrentWord("");
-            wordInProgress.Clear();
+            return targetHexes[UnityEngine.Random.Range(0, targetHexes.Count)];
         }
     }
 }
