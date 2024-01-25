@@ -25,14 +25,35 @@ public class SettingsBoard : MonoBehaviour
         ColorResultTeam1 = GameObject.FindGameObjectWithTag("ColorTeam1").GetComponent<Image>();
         ColorResultTeam2 = GameObject.FindGameObjectWithTag("ColorTeam2").GetComponent<Image>();
     }
-    public void ChangeColour() {
 
+    private Color CreateNewColor(Color colorResultTeam1) {
+        Color newColour = new()
+        {
+            r = colorResultTeam1.r * 1.2f,
+            g = colorResultTeam1.g * 1.2f,
+            b = colorResultTeam1.b * 1.2f
+        };
+        return newColour;
+    }
+
+    public void SaveColour() {
+        Color newTeam1Pressed = CreateNewColor(ColorResultTeam1.color);
+        Color newTeam2Pressed = CreateNewColor(ColorResultTeam2.color);
+
+        FindAnyObjectByType<Board>().HomeTeam1.FillColor = ColorResultTeam1.color;
+        FindAnyObjectByType<Board>().HomeTeam2.FillColor = ColorResultTeam2.color;
+
+        FindAnyObjectByType<Board>().TerritoryTeam1.FillColor = ColorResultTeam1.color;
+        FindAnyObjectByType<Board>().TerritoryTeam2.FillColor = ColorResultTeam2.color;
+
+        FindAnyObjectByType<Board>().PressedTeam1.FillColor = ColorResultTeam1.color;
+        FindAnyObjectByType<Board>().PressedTeam2.FillColor = ColorResultTeam2.color;
     }
     public void LoadMenuScene() {
         SceneManager.LoadScene("Main Menu Scene");
     } 
 
     public void ApplySettings() {
-        //apply settings
+        SaveColour();
     }
 }
