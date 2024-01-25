@@ -72,9 +72,23 @@ public class Board : MonoBehaviour
 
     // Class Methods
     void Start() {
+        InitializeColors();
         InitilizeComponents();
         MakeAllHexagonsInvisible();
         SetHomeBases();       
+    }
+
+    private void InitializeColors() {
+        Debug.Log("Init Colors Called");
+
+        string pressedTeam1Color = "#" + PlayerPrefs.GetString("PressedTeam1Color");
+        Debug.Log(pressedTeam1Color);
+
+        if (ColorUtility.TryParseHtmlString(pressedTeam1Color, out Color pressedTeam1ColorParsed))
+        {
+            Debug.Log("Pressed Team 1 Color Changed, " + pressedTeam1ColorParsed);
+            PressedTeam1.FillColor = pressedTeam1ColorParsed;
+        }
     }
 
     private void InitilizeComponents() {

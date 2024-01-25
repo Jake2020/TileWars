@@ -40,15 +40,18 @@ public class SettingsBoard : MonoBehaviour
         Color newTeam1Pressed = CreateNewColor(ColorResultTeam1.color);
         Color newTeam2Pressed = CreateNewColor(ColorResultTeam2.color);
 
-        FindAnyObjectByType<Board>().HomeTeam1.FillColor = ColorResultTeam1.color;
-        FindAnyObjectByType<Board>().HomeTeam2.FillColor = ColorResultTeam2.color;
+        PlayerPrefs.SetString("PressedTeam1Color", ColorUtility.ToHtmlStringRGB(newTeam1Pressed));
+        PlayerPrefs.SetString("PressedTeam2Color", ColorUtility.ToHtmlStringRGB(newTeam2Pressed));
 
-        FindAnyObjectByType<Board>().TerritoryTeam1.FillColor = ColorResultTeam1.color;
-        FindAnyObjectByType<Board>().TerritoryTeam2.FillColor = ColorResultTeam2.color;
+        PlayerPrefs.SetString("HomeTeam1Color", ColorUtility.ToHtmlStringRGB(ColorResultTeam1.color));
+        PlayerPrefs.SetString("HomeTeam2Color", ColorUtility.ToHtmlStringRGB(ColorResultTeam2.color));
 
-        FindAnyObjectByType<Board>().PressedTeam1.FillColor = ColorResultTeam1.color;
-        FindAnyObjectByType<Board>().PressedTeam2.FillColor = ColorResultTeam2.color;
+        PlayerPrefs.SetString("TerritoryTeam1Color", ColorUtility.ToHtmlStringRGB(ColorResultTeam1.color));
+        PlayerPrefs.SetString("TerritoryTeam2Color", ColorUtility.ToHtmlStringRGB(ColorResultTeam2.color));
+
+        Debug.Log("Colours saved");
     }
+    
     public void LoadMenuScene() {
         SceneManager.LoadScene("Main Menu Scene");
     } 
