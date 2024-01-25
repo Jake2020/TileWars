@@ -5,18 +5,25 @@ using UnityEngine.UI;
 public class SettingsBoard : MonoBehaviour
 {
     //Fields
-    private Image colourResult;
+    private Image colorResultTeam1;
+    private Image colorResultTeam2;
 
     //Properties
-    public Image ColourResult
+    public Image ColorResultTeam1
     {
-        get => colourResult;
-        set => colourResult = value;
+        get => colorResultTeam1;
+        set => colorResultTeam1 = value;
+    }
+    public Image ColorResultTeam2
+    {
+        get => colorResultTeam2;
+        set => colorResultTeam2 = value;
     }
 
     //Methods
     void Awake() {
-        ColourResult = GetComponentInChildren<Image>();
+        ColorResultTeam1 = GameObject.FindGameObjectWithTag("ColorTeam1").GetComponent<Image>();
+        ColorResultTeam2 = GameObject.FindGameObjectWithTag("ColorTeam2").GetComponent<Image>();
     }
     public void ChangeColour() {
 
