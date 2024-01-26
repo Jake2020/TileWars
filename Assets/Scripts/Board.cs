@@ -79,15 +79,43 @@ public class Board : MonoBehaviour
     }
 
     private void InitializeColors() {
-        Debug.Log("Init Colors Called");
+        string[] colorKeys = {
+            "PressedTeam1Color", "PressedTeam2Color",
+            "HomeTeam1Color", "HomeTeam2Color",
+            "TerritoryTeam1Color", "TerritoryTeam2Color"
+        };
 
-        string pressedTeam1Color = "#" + PlayerPrefs.GetString("PressedTeam1Color");
-        Debug.Log(pressedTeam1Color);
-
-        if (ColorUtility.TryParseHtmlString(pressedTeam1Color, out Color pressedTeam1ColorParsed))
+        foreach (string key in colorKeys)
         {
-            Debug.Log("Pressed Team 1 Color Changed, " + pressedTeam1ColorParsed);
-            PressedTeam1.FillColor = pressedTeam1ColorParsed;
+            string colorString = "#" + PlayerPrefs.GetString(key);
+
+            if (ColorUtility.TryParseHtmlString(colorString, out Color parsedColor))
+            {
+                switch (key)
+                {
+                    case "PressedTeam1Color":
+                        PressedTeam1.FillColor = parsedColor;
+                        break;
+                    case "PressedTeam2Color":
+                        PressedTeam2.FillColor = parsedColor;
+                        break;
+                    case "HomeTeam1Color":
+                        HomeTeam1.FillColor = parsedColor;
+                        break;
+                    case "HomeTeam2Color":
+                        HomeTeam2.FillColor = parsedColor;
+                        break;
+                    case "TerritoryTeam1Color":
+                        TerritoryTeam1.FillColor = parsedColor;
+                        break;
+                    case "TerritoryTeam2Color":
+                        TerritoryTeam2.FillColor = parsedColor;
+                        break;
+                    default:
+                        Debug.LogWarning($"Color key {key} not recognized.");
+                        break;
+                }
+            }
         }
     }
 

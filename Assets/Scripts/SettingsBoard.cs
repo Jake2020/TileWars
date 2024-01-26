@@ -26,19 +26,23 @@ public class SettingsBoard : MonoBehaviour
         ColorResultTeam2 = GameObject.FindGameObjectWithTag("ColorTeam2").GetComponent<Image>();
     }
 
-    private Color CreateNewColor(Color colorResultTeam1) {
-        Color newColour = new()
-        {
-            r = colorResultTeam1.r * 1.2f,
-            g = colorResultTeam1.g * 1.2f,
-            b = colorResultTeam1.b * 1.2f
-        };
-        return newColour;
+    private Color CreateNewColor(Color colorResultTeam1, float saturationDelta, float lightnessDelta) {
+        // Convert RGB to HSL
+        Color.RGBToHSV(colorResultTeam1, out float h, out float s, out float l);
+        
+        // Modify saturation and lightness
+        s = Mathf.Clamp01(s + saturationDelta);
+        l = Mathf.Clamp01(l + lightnessDelta);
+
+        // Convert HSL back to RGB
+        Color modifiedColor = Color.HSVToRGB(h, s, l);
+        return modifiedColor;
+    
     }
 
     public void SaveColour() {
-        Color newTeam1Pressed = CreateNewColor(ColorResultTeam1.color);
-        Color newTeam2Pressed = CreateNewColor(ColorResultTeam2.color);
+        Color newTeam1Pressed = CreateNewColor(ColorResultTeam1.color, -0.4f, 1.2f);
+        Color newTeam2Pressed = CreateNewColor(ColorResultTeam2.color, -0.4f, 1.2f);
 
         PlayerPrefs.SetString("PressedTeam1Color", ColorUtility.ToHtmlStringRGB(newTeam1Pressed));
         PlayerPrefs.SetString("PressedTeam2Color", ColorUtility.ToHtmlStringRGB(newTeam2Pressed));

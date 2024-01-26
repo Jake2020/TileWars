@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -45,6 +46,8 @@ public class Hexagon : MonoBehaviour
     void InitilizeComponents() {
         boardObject = FindObjectOfType<Board>();
         hexagonText = GetComponentInChildren<TextMeshProUGUI>();
+        HexagonText.outlineWidth = 0.15F;
+        HexagonText.outlineColor = Color.black;
         hexagonImage = GetComponent<Image>();
         hexagonButton = GetComponent<Button>();
         
