@@ -29,6 +29,16 @@ public class Board : MonoBehaviour
 
     // Fields
     [SerializeField]
+    private AudioSource audioPressed;
+    [SerializeField]
+    private AudioSource audioUnPressed;
+    [SerializeField]
+    private AudioSource audioWordSubmit;
+    [SerializeField]
+    private AudioSource audioWordFailed;
+    [SerializeField]
+    private AudioSource audioVictory;
+    [SerializeField]
     private Button playAgainButton;
     [SerializeField]
     private Button quitButton;
@@ -257,10 +267,12 @@ public class Board : MonoBehaviour
     public void HexagonPressed(Hexagon hex) {
         string hexState = hex.HexagonCurrentState;
         if (hexState == "neutral") {
+            audioPressed.Play();
             CurrentWordUpdate(hex.HexagonText.text);
             hex.SetHexagonState(GetCurrentTeam());
 
         } else if (hexState == "pressedTeam1" || hexState == "pressedTeam2") {
+            audioUnPressed.Play();
             CurrentWordRemove(hex.HexagonText.text);
             hex.SetHexagonState(Neutral);
 
@@ -329,11 +341,13 @@ public class Board : MonoBehaviour
         CheckBoardIsPlayable();
         CheckHomesAreSet();
         CheckBonusTurn();
+        audioWordSubmit.Play();
     }
 
     private void ProcessInvalidWord() {
         ClearPressedHexagonsInvaildWord();
         ResetWordState();
+        audioWordFailed.Play();
     }
 
     private void ProcessHexagonTerritory(Hexagon hex, string team) {
@@ -431,6 +445,7 @@ public class Board : MonoBehaviour
         } else {
             winnerBlockText.text = "Team 2 has Won!";
         }
+        audioVictory.Play();
         winnerBlock.SetActive(true);
         playAgainButton.gameObject.SetActive(true);
         quitButton.gameObject.SetActive(true);
