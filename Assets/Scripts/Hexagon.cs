@@ -11,6 +11,7 @@ public class Hexagon : MonoBehaviour
     // Fields
     private Board boardObject;
     private Button hexagonButton;
+    [SerializeField]
     private string hexagonCurrentState;
     private TextMeshProUGUI hexagonText;
     private Image hexagonImage;

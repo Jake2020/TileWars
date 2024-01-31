@@ -6,6 +6,7 @@ using System;
 using System.Runtime.CompilerServices;
 using UnityEngine.UI;
 using TMPro;
+using System.ComponentModel;
 
 public class Board : MonoBehaviour
 {
@@ -27,7 +28,7 @@ public class Board : MonoBehaviour
     [SerializeField]
     private HexagonStates territoryTeam2;
 
-    // Fields
+    // Serialized Fields
     [SerializeField]
     private AudioSource audioPressed;
     [SerializeField]
@@ -44,8 +45,14 @@ public class Board : MonoBehaviour
     private Button quitButton;
     [SerializeField]
     private GameObject winnerBlock;
+    [SerializeField]
+    private GameObject hexagonPrefab;
+    [SerializeField]
+    private Transform boardTransform;
+
+    // Fields
     private TextMeshProUGUI winnerBlockText;
-    private Hexagon[] allHexagons;
+    private List<Hexagon> allHexagons;
     private bool bonusTurnActive;    
     private CurrentWord currentWordObjectOnScreen; 
     private List<string> listOfLettersPressed = new();
@@ -53,7 +60,7 @@ public class Board : MonoBehaviour
     private bool team1Turn = true;
     
     // Properties
-    public Hexagon[] AllHexagons
+    public List<Hexagon> AllHexagons
     {
         get => allHexagons;
         set => allHexagons = value;
@@ -95,15 +102,31 @@ public class Board : MonoBehaviour
 
     void Awake() {
         Debug.Log("Awake Called");
+        //DeleteHexagons();
+        InitializeHexagonsOnBoard(); 
         InitilizeComponents();
     }
 
     void Start() {
-        Debug.Log("Start Called");
+        Debug.Log("Start Called"); 
         InitializeColors();
         MakeAllHexagonsInvisible();
-        SetHomeBases();       
+        SetHomeBases();
     }
+
+    private void InitializeHexagonsOnBoard() {
+        float amountOfHexagons = PlayerPrefs.GetInt("HexagonCount", 49);
+       
+
+        
+           
+            
+        GameObject newHexagon = Instantiate(hexagonPrefab, boardTransform);
+        newHexagon.transform.SetLocalPositionAndRotation(position, Quaternion.identity);
+            
+        
+    }
+
 
     public void PlayAgain() {
         winnerBlock.SetActive(false);
@@ -162,7 +185,7 @@ public class Board : MonoBehaviour
     }
 
     private void InitilizeComponents() {
-        allHexagons = GetComponentsInChildren<Hexagon>();
+        AllHexagons = GetComponentsInChildren<Hexagon>().ToList();
         spellCheck = new SpellCheck();
         CurrentWordObjectOnScreen = GetComponentInChildren<CurrentWord>();
         winnerBlockText = transform.Find("Winner Block").GetComponentInChildren<TextMeshProUGUI>();
@@ -385,8 +408,8 @@ public class Board : MonoBehaviour
 
     private void SetHomeBases() {
         Debug.Log("Set Home Bases Called");
-        allHexagons[9].SetHexagonState(HomeTeam1);
-        allHexagons[30].SetHexagonState(HomeTeam2);
+        AllHexagons[2].SetHexagonState(HomeTeam1);
+        AllHexagons[42].SetHexagonState(HomeTeam2);
     }
 
     public void SubmitButtonPressed() {
@@ -450,5 +473,13 @@ public class Board : MonoBehaviour
         playAgainButton.gameObject.SetActive(true);
         quitButton.gameObject.SetActive(true);
         ChangeTurn();
+    }
+
+    private void DeleteHexagons() {
+        foreach (Hexagon hex in AllHexagons)
+        {
+           Destroy(hex.gameObject);
+        }
+        AllHexagons.Clear();
     }
 }

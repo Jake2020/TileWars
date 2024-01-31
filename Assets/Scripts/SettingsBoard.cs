@@ -53,7 +53,6 @@ public class SettingsBoard : MonoBehaviour
         PlayerPrefs.SetString("TerritoryTeam1Color", ColorUtility.ToHtmlStringRGB(ColorResultTeam1.color));
         PlayerPrefs.SetString("TerritoryTeam2Color", ColorUtility.ToHtmlStringRGB(ColorResultTeam2.color));
 
-        Debug.Log("Colours saved");
     }
     
     public void LoadMenuScene() {
@@ -62,5 +61,17 @@ public class SettingsBoard : MonoBehaviour
 
     public void ApplySettings() {
         SaveColour();
+    }
+
+    public void SmallBoard() {
+        PlayerPrefs.SetInt("HexagonCount", 31);
+    }
+
+    public void MediumBoard() {
+        PlayerPrefs.SetInt("HexagonCount", 49);
+    }
+
+    public void LargeBoard() {
+        PlayerPrefs.SetInt("HexagonCount", 64);
     }
 }
