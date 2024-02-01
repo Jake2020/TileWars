@@ -64,14 +64,17 @@ public class SettingsBoard : MonoBehaviour
     }
 
     public void SmallBoard() {
-        PlayerPrefs.SetInt("HexagonCount", 31);
+        PlayerPrefs.SetInt("BoardCols", 7);
+        PlayerPrefs.SetInt("BoardRows", 9);
     }
 
     public void MediumBoard() {
-        PlayerPrefs.SetInt("HexagonCount", 49);
+        PlayerPrefs.SetInt("BoardCols", 9);
+        PlayerPrefs.SetInt("BoardRows", 11);
     }
 
     public void LargeBoard() {
-        PlayerPrefs.SetInt("HexagonCount", 64);
+        PlayerPrefs.SetInt("BoardCols", 11);
+        PlayerPrefs.SetInt("BoardRows", 13);
     }
 }
