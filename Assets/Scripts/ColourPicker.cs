@@ -12,6 +12,7 @@ public class ColourPicker : MonoBehaviour, IPointerClickHandler
 
     //Methods
     public void OnPointerClick(PointerEventData eventData) {
+        FindObjectOfType<SettingsBoard>().ChooseSettingsNoise.Play();
         output = Pick(Camera.main.WorldToScreenPoint(eventData.position), GetComponent<Image>());
         output.a = 1.0f;
         if (team == "team1") {

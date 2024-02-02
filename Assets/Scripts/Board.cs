@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.ComponentModel;
 using Unity.Collections;
+using System.Collections;
 
 public class Board : MonoBehaviour
 {
@@ -40,6 +41,8 @@ public class Board : MonoBehaviour
     private AudioSource audioWordFailed;
     [SerializeField]
     private AudioSource audioVictory;
+    [SerializeField]
+    private AudioSource chooseSettingsNoise;
     [SerializeField]
     private Button playAgainButton;
     [SerializeField]
@@ -125,7 +128,7 @@ public class Board : MonoBehaviour
                 for (int k = 1; k <= (int)Math.Floor((double)boardCols / 2); k++) {
                     x = k * Hexagon.HORIZONTALOFFSET * 2;
                     y = i * Hexagon.VERTICALOFFSET / 2;
-                    Vector3 position = new(x - 410, y - 150);
+                    Vector3 position = new(x - 350, y - 200);
                     CreateHexagon(position);
                 }
             } else {
@@ -133,7 +136,7 @@ public class Board : MonoBehaviour
                 for (int k = 1; k <= (int)Math.Ceiling((double)boardCols / 2); k++) {
                     x = k * Hexagon.HORIZONTALOFFSET * 2 - Hexagon.HORIZONTALOFFSET;
                     y = i * (Hexagon.VERTICALOFFSET / 2);
-                    Vector3 position = new(x - 410, y - 150);
+                    Vector3 position = new(x - 350, y - 200);
                     CreateHexagon(position);
                 }
             }
@@ -333,7 +336,13 @@ public class Board : MonoBehaviour
     }
 
     public void LoadMainMenu() {
-        SceneManager.LoadScene("Main Menu Scene");
+        chooseSettingsNoise.Play();
+        StartCoroutine(LoadSceneCoroutine("Main Menu Scene"));
+    }
+
+    private IEnumerator LoadSceneCoroutine(string scene) {
+        yield return new WaitWhile(() => chooseSettingsNoise.isPlaying);
+        SceneManager.LoadScene(scene);
     }
 
     private void MakeAllHexagonsInvisible(){

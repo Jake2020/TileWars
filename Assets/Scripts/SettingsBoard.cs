@@ -1,9 +1,16 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections;
 
 public class SettingsBoard : MonoBehaviour
 {
+    //Serialized Fields
+    [SerializeField]
+    private AudioSource applySettingsNoise;
+    [SerializeField]
+    private AudioSource chooseSettingsNoise;
+
     //Fields
     private Image colorResultTeam1;
     private Image colorResultTeam2;
@@ -18,6 +25,11 @@ public class SettingsBoard : MonoBehaviour
     {
         get => colorResultTeam2;
         set => colorResultTeam2 = value;
+    }
+    public AudioSource ChooseSettingsNoise
+    {
+        get => chooseSettingsNoise;
+        set => chooseSettingsNoise = value;
     }
 
     //Methods
@@ -56,25 +68,35 @@ public class SettingsBoard : MonoBehaviour
     }
     
     public void LoadMenuScene() {
-        SceneManager.LoadScene("Main Menu Scene");
+        chooseSettingsNoise.Play();
+        StartCoroutine(LoadSceneCoroutine("Main Menu Scene"));
     } 
 
     public void ApplySettings() {
         SaveColour();
+        applySettingsNoise.Play();
     }
 
     public void SmallBoard() {
         PlayerPrefs.SetInt("BoardCols", 7);
         PlayerPrefs.SetInt("BoardRows", 9);
+        chooseSettingsNoise.Play();
     }
 
     public void MediumBoard() {
         PlayerPrefs.SetInt("BoardCols", 9);
         PlayerPrefs.SetInt("BoardRows", 11);
+        chooseSettingsNoise.Play();
     }
 
     public void LargeBoard() {
         PlayerPrefs.SetInt("BoardCols", 11);
         PlayerPrefs.SetInt("BoardRows", 13);
+        chooseSettingsNoise.Play();
+    }
+
+    private IEnumerator LoadSceneCoroutine(string scene) {
+        yield return new WaitWhile(() => chooseSettingsNoise.isPlaying);
+        SceneManager.LoadScene(scene);
     }
 }
