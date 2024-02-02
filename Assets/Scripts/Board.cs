@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine.UI;
 using TMPro;
 using System.ComponentModel;
+using Unity.Collections;
 
 public class Board : MonoBehaviour
 {
@@ -101,14 +102,11 @@ public class Board : MonoBehaviour
     // Class Methods
 
     void Awake() {
-        Debug.Log("Awake Called");
-        //DeleteHexagons();
         InitializeHexagonsOnBoard(); 
         InitilizeComponents();
     }
 
     void Start() {
-        Debug.Log("Start Called"); 
         InitializeColors();
         MakeAllHexagonsInvisible();
         SetHomeBases();
@@ -128,7 +126,6 @@ public class Board : MonoBehaviour
                     x = k * Hexagon.HORIZONTALOFFSET * 2;
                     y = i * Hexagon.VERTICALOFFSET / 2;
                     Vector3 position = new(x - 410, y - 150);
-                    Debug.Log(position);
                     CreateHexagon(position);
                 }
             } else {
@@ -137,7 +134,6 @@ public class Board : MonoBehaviour
                     x = k * Hexagon.HORIZONTALOFFSET * 2 - Hexagon.HORIZONTALOFFSET;
                     y = i * (Hexagon.VERTICALOFFSET / 2);
                     Vector3 position = new(x - 410, y - 150);
-                    Debug.Log(position);
                     CreateHexagon(position);
                 }
             }
@@ -145,8 +141,11 @@ public class Board : MonoBehaviour
     }
 
     private void CreateHexagon(Vector3 position) {
-        GameObject newHexagon = Instantiate(hexagonPrefab, boardTransform);
-        newHexagon.transform.SetLocalPositionAndRotation(position, Quaternion.identity);
+        GameObject newHexagonObject = Instantiate(hexagonPrefab, boardTransform);
+        newHexagonObject.transform.SetLocalPositionAndRotation(position, Quaternion.identity);
+        Hexagon newHexagon = newHexagonObject.GetComponent<Hexagon>();
+        newHexagon.HexagonX = position.x;
+        newHexagon.HexagonY = position.y;
     }
 
     public void PlayAgain() {
@@ -428,29 +427,15 @@ public class Board : MonoBehaviour
     }
 
     private void SetHomeBases() {
-        Debug.Log("Set Home Bases Called");
         int boardCols = PlayerPrefs.GetInt("BoardCols");
         int base1;
         int base2;
-        switch (boardCols)
-        {
-            case 7:
-                base1 = 10;
-                base2 = 22;
-                break;
-            case 9:
-                base1 = 13;
-                base2 = 38;
-                break;
-            case 11:
-                base1 = 16;
-                base2 = 56;
-                break;
-            default:
-                base1 = 13;
-                base2 = 38;
-                break;
-        }
+
+        int x = (int)Math.Ceiling((double)boardCols / 2);
+        int totalHexes = x * x * 2;
+        base1 = boardCols + (int)Math.Floor((double)boardCols / 2);
+        base2 = totalHexes - base1;
+
         AllHexagons[base1 - 1].SetHexagonState(HomeTeam1);
         AllHexagons[base2 - 1].SetHexagonState(HomeTeam2);
     }
