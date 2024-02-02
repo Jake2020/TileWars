@@ -427,13 +427,16 @@ public class Board : MonoBehaviour
     }
 
     private void SetHomeBases() {
-        int boardCols = PlayerPrefs.GetInt("BoardCols");
-        int base1;
-        int base2;
 
-        int x = (int)Math.Ceiling((double)boardCols / 2);
-        int totalHexes = x * x * 2;
-        base1 = boardCols + (int)Math.Floor((double)boardCols / 2);
+        //the math only works if there are two more rows than columns in the board eg. 7 cols and 9 rows
+        int boardCols = PlayerPrefs.GetInt("BoardCols");
+        int base1, base2;
+
+        int halfBoardColsRoundedUp = (int)Math.Ceiling((double)boardCols / 2);
+        int halfBoardColsRoundedDown = (int)Math.Floor((double)boardCols / 2);
+        int totalHexes = halfBoardColsRoundedUp * halfBoardColsRoundedUp * 2;
+
+        base1 = boardCols + halfBoardColsRoundedDown;
         base2 = totalHexes - base1;
 
         AllHexagons[base1 - 1].SetHexagonState(HomeTeam1);
