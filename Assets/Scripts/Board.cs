@@ -211,7 +211,13 @@ public class Board : MonoBehaviour
         AllHexagons = GetComponentsInChildren<Hexagon>().ToList();
         spellCheck = new SpellCheck();
         CurrentWordObjectOnScreen = GetComponentInChildren<CurrentWord>();
+        InitializeWinnerBlock();
+    }
+
+    private void InitializeWinnerBlock() {
         winnerBlockText = transform.Find("Winner Block").GetComponentInChildren<TextMeshProUGUI>();
+        RectTransform winnerBlockRect = winnerBlock.GetComponent<RectTransform>();
+        winnerBlockRect.SetAsLastSibling();
     }
 
     public void ChangeTurn() { 

@@ -239,6 +239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f801990dbff5f3b4fa6ee64fd0bd3588, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hexagonCurrentState: 
 --- !u!114 &2985606448657084922
 MonoBehaviour:
   m_ObjectHideFlags: 0
