@@ -53,12 +53,13 @@ public class Board : MonoBehaviour
     private GameObject hexagonPrefab;
     [SerializeField]
     private Transform boardTransform;
+    [SerializeField]
+    private CurrentWord currentWordObjectOnScreen; 
 
     // Fields
     private TextMeshProUGUI winnerBlockText;
     private List<Hexagon> allHexagons;
     private bool bonusTurnActive;    
-    private CurrentWord currentWordObjectOnScreen; 
     private List<string> listOfLettersPressed = new();
     private SpellCheck spellCheck = new();
     private bool team1Turn = true;
@@ -210,7 +211,6 @@ public class Board : MonoBehaviour
     private void InitilizeComponents() {
         AllHexagons = GetComponentsInChildren<Hexagon>().ToList();
         spellCheck = new SpellCheck();
-        CurrentWordObjectOnScreen = GetComponentInChildren<CurrentWord>();
         InitializeWinnerBlock();
     }
 
