@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.Collections;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +12,7 @@ public class Hexagon : MonoBehaviour
     // Fields
     private Board boardObject;
     private Button hexagonButton;
+    [SerializeField]
     private string hexagonCurrentState;
     private TextMeshProUGUI hexagonText;
     private Image hexagonImage;
@@ -33,9 +35,21 @@ public class Hexagon : MonoBehaviour
     }
     public Image HexagonImage => hexagonImage;
 
-    public float HexagonX => hexagonX;
-    public float HexagonY => hexagonY;
-    public float HexagonZ => hexagonZ;
+    public float HexagonX
+    {
+        get => hexagonX;
+        set => hexagonX = value;
+    }
+    public float HexagonY
+    {
+        get => hexagonY;
+        set => hexagonY = value;
+    }
+    public float HexagonZ
+    {
+        get => hexagonZ;
+        set => hexagonZ = value;
+    }
 
     // Class Methods
     void Awake() {
@@ -50,10 +64,6 @@ public class Hexagon : MonoBehaviour
         HexagonText.outlineColor = Color.black;
         hexagonImage = GetComponent<Image>();
         hexagonButton = GetComponent<Button>();
-        
-        hexagonX = transform.position.x;
-        hexagonY = transform.position.y;
-        hexagonZ = transform.position.z;
     }
 
     public void DeleteLetter(){
@@ -61,21 +71,22 @@ public class Hexagon : MonoBehaviour
     }
 
     public List<Hexagon> FindTouchingHexagons() {
-        List<Hexagon> touchingHexagonsArray = new List<Hexagon>();
+        List<Hexagon> touchingHexagonsArray = new();
 
         int[] horizontalOffsets = { 0, HORIZONTALOFFSET, HORIZONTALOFFSET, 0, -HORIZONTALOFFSET, -HORIZONTALOFFSET};
         int[] verticalOffsets = { VERTICALOFFSET, VERTICALDIAGONALOFFSET, -VERTICALDIAGONALOFFSET, -VERTICALOFFSET, -VERTICALDIAGONALOFFSET, VERTICALDIAGONALOFFSET  };
 
         for (int i = 0; i < 6; i++) { 
         
-            float targetX = this.hexagonX + horizontalOffsets[i];
-            float targetY = this.hexagonY + verticalOffsets[i];
+            float targetX = this.HexagonX + horizontalOffsets[i];
+            float targetY = this.HexagonY + verticalOffsets[i];
 
-            Hexagon touchingHexagon = boardObject.AllHexagons.FirstOrDefault(h => h.hexagonX == targetX && h.hexagonY == targetY);
+            Hexagon touchingHexagon = boardObject.AllHexagons.FirstOrDefault(h => h.HexagonX == targetX && h.HexagonY == targetY);
 
             if (touchingHexagon != null)
             {
                 touchingHexagonsArray.Add(touchingHexagon);
+
             }
         }
 

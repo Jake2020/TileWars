@@ -42,7 +42,7 @@ public class SpellCheck
         return false;
     }
 
-    public bool CanFormValidWord(Hexagon[] AllHexagons) {
+    public bool CanFormValidWord(List<Hexagon> AllHexagons) {
         List<string> letters = new();
         foreach (Hexagon hex in AllHexagons) {
             if (!string.IsNullOrWhiteSpace(hex.HexagonText.text) && hex.HexagonText.text != "*" ) {

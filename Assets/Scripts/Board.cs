@@ -6,6 +6,9 @@ using System;
 using System.Runtime.CompilerServices;
 using UnityEngine.UI;
 using TMPro;
+using System.ComponentModel;
+using Unity.Collections;
+using System.Collections;
 
 public class Board : MonoBehaviour
 {
@@ -27,7 +30,7 @@ public class Board : MonoBehaviour
     [SerializeField]
     private HexagonStates territoryTeam2;
 
-    // Fields
+    // Serialized Fields
     [SerializeField]
     private AudioSource audioPressed;
     [SerializeField]
@@ -39,21 +42,30 @@ public class Board : MonoBehaviour
     [SerializeField]
     private AudioSource audioVictory;
     [SerializeField]
+    private AudioSource chooseSettingsNoise;
+    [SerializeField]
     private Button playAgainButton;
     [SerializeField]
     private Button quitButton;
     [SerializeField]
     private GameObject winnerBlock;
-    private TextMeshProUGUI winnerBlockText;
-    private Hexagon[] allHexagons;
-    private bool bonusTurnActive;    
+    [SerializeField]
+    private GameObject hexagonPrefab;
+    [SerializeField]
+    private Transform boardTransform;
+    [SerializeField]
     private CurrentWord currentWordObjectOnScreen; 
+
+    // Fields
+    private TextMeshProUGUI winnerBlockText;
+    private List<Hexagon> allHexagons;
+    private bool bonusTurnActive;    
     private List<string> listOfLettersPressed = new();
     private SpellCheck spellCheck = new();
     private bool team1Turn = true;
     
     // Properties
-    public Hexagon[] AllHexagons
+    public List<Hexagon> AllHexagons
     {
         get => allHexagons;
         set => allHexagons = value;
@@ -94,15 +106,50 @@ public class Board : MonoBehaviour
     // Class Methods
 
     void Awake() {
-        Debug.Log("Awake Called");
+        InitializeHexagonsOnBoard(); 
         InitilizeComponents();
     }
 
     void Start() {
-        Debug.Log("Start Called");
         InitializeColors();
         MakeAllHexagonsInvisible();
-        SetHomeBases();       
+        SetHomeBases();
+    }
+
+    private void InitializeHexagonsOnBoard() {
+        float boardCols = PlayerPrefs.GetInt("BoardCols", 7);
+        float boardRows = PlayerPrefs.GetInt("BoardRows", 9);
+
+        float x = 0;
+        float y = 0;
+
+        for (int i = 0; i < boardRows; i++) {
+            if (i % 2 == 0) {
+                //create short row
+                for (int k = 1; k <= (int)Math.Floor((double)boardCols / 2); k++) {
+                    x = k * Hexagon.HORIZONTALOFFSET * 2;
+                    y = i * Hexagon.VERTICALOFFSET / 2;
+                    Vector3 position = new(x - 350, y - 200);
+                    CreateHexagon(position);
+                }
+            } else {
+                //create long row
+                for (int k = 1; k <= (int)Math.Ceiling((double)boardCols / 2); k++) {
+                    x = k * Hexagon.HORIZONTALOFFSET * 2 - Hexagon.HORIZONTALOFFSET;
+                    y = i * (Hexagon.VERTICALOFFSET / 2);
+                    Vector3 position = new(x - 350, y - 200);
+                    CreateHexagon(position);
+                }
+            }
+        }    
+    }
+
+    private void CreateHexagon(Vector3 position) {
+        GameObject newHexagonObject = Instantiate(hexagonPrefab, boardTransform);
+        newHexagonObject.transform.SetLocalPositionAndRotation(position, Quaternion.identity);
+        Hexagon newHexagon = newHexagonObject.GetComponent<Hexagon>();
+        newHexagon.HexagonX = position.x;
+        newHexagon.HexagonY = position.y;
     }
 
     public void PlayAgain() {
@@ -162,10 +209,15 @@ public class Board : MonoBehaviour
     }
 
     private void InitilizeComponents() {
-        allHexagons = GetComponentsInChildren<Hexagon>();
+        AllHexagons = GetComponentsInChildren<Hexagon>().ToList();
         spellCheck = new SpellCheck();
-        CurrentWordObjectOnScreen = GetComponentInChildren<CurrentWord>();
+        InitializeWinnerBlock();
+    }
+
+    private void InitializeWinnerBlock() {
         winnerBlockText = transform.Find("Winner Block").GetComponentInChildren<TextMeshProUGUI>();
+        RectTransform winnerBlockRect = winnerBlock.GetComponent<RectTransform>();
+        winnerBlockRect.SetAsLastSibling();
     }
 
     public void ChangeTurn() { 
@@ -290,7 +342,13 @@ public class Board : MonoBehaviour
     }
 
     public void LoadMainMenu() {
-        SceneManager.LoadScene("Main Menu Scene");
+        chooseSettingsNoise.Play();
+        StartCoroutine(LoadSceneCoroutine("Main Menu Scene"));
+    }
+
+    private IEnumerator LoadSceneCoroutine(string scene) {
+        yield return new WaitWhile(() => chooseSettingsNoise.isPlaying);
+        SceneManager.LoadScene(scene);
     }
 
     private void MakeAllHexagonsInvisible(){
@@ -384,9 +442,31 @@ public class Board : MonoBehaviour
     }
 
     private void SetHomeBases() {
-        Debug.Log("Set Home Bases Called");
-        allHexagons[9].SetHexagonState(HomeTeam1);
-        allHexagons[30].SetHexagonState(HomeTeam2);
+
+        //the math only works if there are two more rows than columns in the board eg. 7 cols and 9 rows
+        int boardCols = PlayerPrefs.GetInt("BoardCols");
+        int base1, base2;
+
+        int halfBoardColsRoundedUp = (int)Math.Ceiling((double)boardCols / 2);
+        int halfBoardColsRoundedDown = (int)Math.Floor((double)boardCols / 2);
+        int totalHexes = halfBoardColsRoundedUp * halfBoardColsRoundedUp * 2;
+
+        SetCameraZoom(totalHexes);
+
+        base1 = boardCols + halfBoardColsRoundedDown;
+        base2 = totalHexes - base1;
+
+        AllHexagons[base1 - 1].SetHexagonState(HomeTeam1);
+        AllHexagons[base2 - 1].SetHexagonState(HomeTeam2);
+    }
+
+    private void SetCameraZoom(int totalHexes) {
+        int middleHex = totalHexes / 2;
+        Vector3 middleHexCoords = new(AllHexagons[middleHex - 1].HexagonX, AllHexagons[middleHex - 1].HexagonY);
+        float camSize = (float)(230 + ((totalHexes + 10) * 2.4));
+
+        Camera.main.orthographicSize = camSize;
+        Camera.main.transform.Translate(middleHexCoords);
     }
 
     public void SubmitButtonPressed() {
@@ -451,4 +531,5 @@ public class Board : MonoBehaviour
         quitButton.gameObject.SetActive(true);
         ChangeTurn();
     }
+
 }

@@ -12,6 +12,7 @@ public class ColourPicker : MonoBehaviour, IPointerClickHandler
 
     //Methods
     public void OnPointerClick(PointerEventData eventData) {
+        FindObjectOfType<SettingsBoard>().ChooseSettingsNoise.Play();
         output = Pick(Camera.main.WorldToScreenPoint(eventData.position), GetComponent<Image>());
         output.a = 1.0f;
         if (team == "team1") {
@@ -35,9 +36,6 @@ public class ColourPicker : MonoBehaviour, IPointerClickHandler
             Mathf.Clamp((int)(texture.width * (localPoint.x / imageToPick.rectTransform.sizeDelta.x)), 0, texture.width - 1),
             Mathf.Clamp((int)(texture.height * (localPoint.y / imageToPick.rectTransform.sizeDelta.y)), 0, texture.height - 1)
         );
-
-        Debug.Log("Texture Point: " + texturePoint);
-
         return texture.GetPixel(texturePoint.x, texturePoint.y);
     }
 
