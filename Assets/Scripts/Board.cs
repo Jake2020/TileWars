@@ -3,11 +3,8 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.SceneManagement;
 using System;
-using System.Runtime.CompilerServices;
 using UnityEngine.UI;
 using TMPro;
-using System.ComponentModel;
-using Unity.Collections;
 using System.Collections;
 
 public class Board : MonoBehaviour
