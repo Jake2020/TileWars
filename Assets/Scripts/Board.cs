@@ -451,11 +451,22 @@ public class Board : MonoBehaviour
         int halfBoardColsRoundedDown = (int)Math.Floor((double)boardCols / 2);
         int totalHexes = halfBoardColsRoundedUp * halfBoardColsRoundedUp * 2;
 
+        SetCameraZoom(totalHexes);
+
         base1 = boardCols + halfBoardColsRoundedDown;
         base2 = totalHexes - base1;
 
         AllHexagons[base1 - 1].SetHexagonState(HomeTeam1);
         AllHexagons[base2 - 1].SetHexagonState(HomeTeam2);
+    }
+
+    private void SetCameraZoom(int totalHexes) {
+        int middleHex = totalHexes / 2;
+        Vector3 middleHexCoords = new(AllHexagons[middleHex - 1].HexagonX, AllHexagons[middleHex - 1].HexagonY);
+        float camSize = (float)(230 + ((totalHexes + 10) * 2.4));
+
+        Camera.main.orthographicSize = camSize;
+        Camera.main.transform.Translate(middleHexCoords);
     }
 
     public void SubmitButtonPressed() {
@@ -521,11 +532,4 @@ public class Board : MonoBehaviour
         ChangeTurn();
     }
 
-    private void DeleteHexagons() {
-        foreach (Hexagon hex in AllHexagons)
-        {
-           Destroy(hex.gameObject);
-        }
-        AllHexagons.Clear();
-    }
 }
